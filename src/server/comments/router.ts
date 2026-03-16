@@ -1,4 +1,4 @@
-import { os } from '@orpc/server'
+import { os, ORPCError } from '@orpc/server'
 import { z } from 'zod'
 import { and, eq } from 'drizzle-orm'
 import { db } from '#/server/db/client'
@@ -33,8 +33,8 @@ export const commentsRouter = os.router({
     .handler(async ({ input, context }) => {
       if (input.parentId) {
         const [parent] = await db.select().from(comments).where(eq(comments.id, input.parentId)).limit(1)
-        if (!parent) throw new Error('Parent comment not found')
-        if (parent.parentId !== null) throw new Error('Cannot nest more than 1 level deep')
+        if (!parent) throw new ORPCError('NOT_FOUND', { message: 'Parent comment not found' })
+        if (parent.parentId !== null) throw new ORPCError('BAD_REQUEST', { message: 'Cannot nest more than 1 level deep' })
       }
 
       const [created] = await db
@@ -58,7 +58,7 @@ export const commentsRouter = os.router({
         .where(and(eq(comments.id, input.commentId), eq(comments.userId, context.user.id)))
         .returning()
 
-      if (!deleted) throw new Error('Comment not found or not yours')
+      if (!deleted) throw new ORPCError('NOT_FOUND', { message: 'Comment not found or not yours' })
       return { ok: true }
     }),
 
@@ -93,7 +93,7 @@ export const commentsRouter = os.router({
         .where(and(eq(reactions.id, input.reactionId), eq(reactions.userId, context.user.id)))
         .returning()
 
-      if (!deleted) throw new Error('Reaction not found or not yours')
+      if (!deleted) throw new ORPCError('NOT_FOUND', { message: 'Reaction not found or not yours' })
       return { ok: true }
     }),
 })

@@ -3,7 +3,17 @@ import rehypeShiki from '@shikijs/rehype'
 import matter from 'gray-matter'
 import remarkGfm from 'remark-gfm'
 import { readFileSync, readdirSync, statSync } from 'node:fs'
-import { join } from 'node:path'
+import { join, sep } from 'node:path'
+import { ORPCError } from '@orpc/server'
+import { z } from 'zod'
+
+const PostFrontmatterSchema = z.object({
+  title: z.string(),
+  date: z.union([z.string(), z.date()]).transform((v) => (v instanceof Date ? v.toISOString() : v)),
+  tags: z.array(z.string()),
+  category: z.string(),
+  description: z.string(),
+})
 
 export interface PostFrontmatter {
   title: string
@@ -20,6 +30,8 @@ const cache = new Map<string, { code: string; mtime: number; frontmatter: PostFr
 
 export async function compileMdx(slug: string): Promise<{ code: string; frontmatter: PostFrontmatter }> {
   const filePath = join(POSTS_DIR, `${slug}.mdx`)
+  // Prevent path traversal
+  if (!filePath.startsWith(POSTS_DIR + sep)) throw new ORPCError('NOT_FOUND')
   const mtime = statSync(filePath).mtimeMs
   const cached = cache.get(slug)
 
@@ -29,7 +41,7 @@ export async function compileMdx(slug: string): Promise<{ code: string; frontmat
 
   const raw = readFileSync(filePath, 'utf-8')
   const { data, content } = matter(raw)
-  const frontmatter = data as PostFrontmatter
+  const frontmatter = PostFrontmatterSchema.parse(data)
 
   const compiled = await compile(content, {
     outputFormat: 'function-body',
@@ -51,6 +63,9 @@ export function listPosts(): Array<PostFrontmatter & { slug: string }> {
     const slug = file.replace('.mdx', '')
     const raw = readFileSync(join(POSTS_DIR, file), 'utf-8')
     const { data } = matter(raw)
-    return { ...(data as PostFrontmatter), slug }
-  }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    const parsed = PostFrontmatterSchema.safeParse(data)
+    if (!parsed.success) return null
+    return { ...parsed.data, slug }
+  }).filter((p): p is PostFrontmatter & { slug: string } => p !== null)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }
