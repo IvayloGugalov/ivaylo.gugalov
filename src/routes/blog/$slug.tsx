@@ -28,12 +28,12 @@ export const Route = createFileRoute('/blog/$slug')({
 
 function BlogPostPage() {
   const { post, meta, slug } = Route.useLoaderData()
-  const incrementViews = useMutation(orpcQuery.blog.incrementViews.mutationOptions())
+  const { mutate: incrementViewsMutate } = useMutation(orpcQuery.blog.incrementViews.mutationOptions())
   const [MDXContent, setMDXContent] = useState<React.ComponentType | null>(null)
 
   useEffect(() => {
-    incrementViews.mutate({ slug })
-  }, [slug]) // eslint-disable-line
+    incrementViewsMutate({ slug })
+  }, [slug, incrementViewsMutate])
 
   useEffect(() => {
     run(post.code, { ...runtime } as Parameters<typeof run>[1]).then((mod: MDXModule) => {

@@ -2,7 +2,8 @@ import { Moon, Sun, SunMoon } from 'lucide-react'
 import { useThemeStore } from '#/store/theme'
 
 export function ThemeToggle() {
-  const { mode, toggle } = useThemeStore()
+  const mode = useThemeStore((s) => s.mode)
+  const toggle = useThemeStore((s) => s.toggle)
 
   const icon =
     mode === 'dark' ? <Moon size={16} /> :

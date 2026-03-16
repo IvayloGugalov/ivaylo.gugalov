@@ -19,7 +19,8 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
       {EMOJI_OPTIONS.map((emoji) => (
         <button
           key={emoji}
-          disabled={!user}
+          type="button"
+          disabled={!user || addReaction.isPending}
           title={user ? `React with ${emoji}` : 'Sign in to react'}
           onClick={() => addReaction.mutate({ targetId, targetType, emoji })}
           className="px-2.5 py-1 rounded-full text-sm border border-[var(--line)] hover:border-[var(--lagoon)] hover:bg-[var(--surface)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"

@@ -133,12 +133,12 @@ function CommentItem({ comment, currentUserId, onReply, onDelete }: CommentItemP
         <p className="text-sm text-[var(--sea-ink)]">{comment.content}</p>
         <div className="flex gap-3 mt-2">
           {onReply && (
-            <button onClick={onReply} className="text-xs text-[var(--sea-ink-soft)] hover:text-[var(--lagoon)] transition-colors">
+            <button type="button" onClick={onReply} className="text-xs text-[var(--sea-ink-soft)] hover:text-[var(--lagoon)] transition-colors">
               Reply
             </button>
           )}
           {isOwn && (
-            <button onClick={onDelete} className="text-xs text-[var(--sea-ink-soft)] hover:text-red-500 transition-colors">
+            <button type="button" onClick={onDelete} className="text-xs text-[var(--sea-ink-soft)] hover:text-red-500 transition-colors">
               Delete
             </button>
           )}
