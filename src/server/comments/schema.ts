@@ -5,16 +5,13 @@ import {
   unique,
   uuid,
 } from 'drizzle-orm/pg-core'
+import { users } from '#/server/db/schema'
 
-// Forward-reference to Better Auth users table (generated in Task 4)
-// FK constraint is expressed via .references() pointing to the table name string
 export const comments = pgTable('comments', {
   id: uuid('id').primaryKey().defaultRandom(),
   postSlug: text('post_slug').notNull(),
-  // FK to users.id — Better Auth owns the users table
-  userId: text('user_id').notNull(),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
-  // Self-referencing FK: null = top-level, non-null = reply (max 1 level enforced in router)
   parentId: uuid('parent_id'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
@@ -26,8 +23,7 @@ export const reactions = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     targetId: text('target_id').notNull(),
     targetType: text('target_type', { enum: ['post', 'comment'] }).notNull(),
-    // FK to users.id — Better Auth owns the users table
-    userId: text('user_id').notNull(),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     emoji: text('emoji').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },
