@@ -2,6 +2,10 @@ import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
 import { db } from '#/server/db/client'
 
+if (!process.env.BETTER_AUTH_SECRET) {
+  throw new Error('BETTER_AUTH_SECRET environment variable is not set')
+}
+
 export const auth = betterAuth({
   // Better Auth uses BETTER_AUTH_URL env var by convention
   baseURL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',

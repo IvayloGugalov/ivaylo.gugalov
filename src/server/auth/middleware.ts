@@ -1,4 +1,4 @@
-import { os } from '@orpc/server'
+import { os, ORPCError } from '@orpc/server'
 import { auth, type Session, type User } from './auth'
 
 // Base procedure — all procedures start here
@@ -11,10 +11,10 @@ export const publicProcedure = baseProcedure
 export const requireAuth = baseProcedure.use(
   async ({ context, next }) => {
     const headers = (context as { headers?: Headers }).headers
-    if (!headers) throw new Error('UNAUTHORIZED')
+    if (!headers) throw new ORPCError('UNAUTHORIZED')
 
     const session = await auth.api.getSession({ headers })
-    if (!session?.user) throw new Error('UNAUTHORIZED')
+    if (!session?.user) throw new ORPCError('UNAUTHORIZED')
 
     return next({
       context: {
