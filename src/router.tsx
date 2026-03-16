@@ -1,13 +1,16 @@
 import { createRouter as createTanStackRouter } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen'
+import { queryClient } from './lib/orpc-client'
 
 export function getRouter() {
   const router = createTanStackRouter({
     routeTree,
-
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
+    context: {
+      queryClient,
+    },
   })
 
   return router
