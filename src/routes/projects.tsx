@@ -1,0 +1,34 @@
+import { createFileRoute } from '@tanstack/react-router'
+import { fetchWhitelistedRepos } from '#/lib/github'
+import { RepoCard } from '#/components/projects/RepoCard'
+
+export const Route = createFileRoute('/projects')({
+  loader: async () => {
+    const repos = await fetchWhitelistedRepos()
+    return { repos }
+  },
+  head: () => ({
+    meta: [{ title: 'Projects | Portfolio' }],
+  }),
+  component: ProjectsPage,
+})
+
+function ProjectsPage() {
+  const { repos } = Route.useLoaderData()
+
+  return (
+    <main className="mx-auto max-w-4xl px-4 py-16">
+      <h1 className="font-[Fraunces] text-4xl font-bold text-[var(--sea-ink)] mb-4">Projects</h1>
+      <p className="text-[var(--sea-ink-soft)] mb-10">A selection of things I've built.</p>
+      {repos.length === 0 ? (
+        <p className="text-[var(--sea-ink-soft)]">No projects configured yet. Add repos to <code>src/lib/whitelist.ts</code>.</p>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2">
+          {repos.map((repo) => (
+            <RepoCard key={repo.name} repo={repo} />
+          ))}
+        </div>
+      )}
+    </main>
+  )
+}
