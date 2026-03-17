@@ -29,7 +29,10 @@ export const makeQueryClient = () => {
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        console.error(error.message)
+        console.error('[QueryCache] error:', error.message)
+      },
+      onSuccess: (_data, query) => {
+        console.log('[QueryCache] fetched:', JSON.stringify(query.queryKey))
       },
     }),
     mutationCache: new MutationCache({

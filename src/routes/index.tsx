@@ -26,8 +26,8 @@ function HomePage() {
           that matter.
         </h1>
         <p className='text-lg text-(--sea-ink-soft) max-w-xl mb-10'>
-          I design and build full-stack web applications with a focus on developer experience,
-          performance, and clean interfaces.
+          I design and build full-stack web applications with a focus on developer
+          experience, performance, and clean interfaces.
         </p>
         <div className='flex gap-4'>
           <Link

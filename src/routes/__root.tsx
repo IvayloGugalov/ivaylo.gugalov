@@ -1,4 +1,9 @@
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  HeadContent,
+  Outlet,
+  Scripts,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createServerFn } from '@tanstack/react-start'
@@ -56,7 +61,7 @@ function RootComponent() {
       <Header />
       <Outlet />
       <Footer />
-      <Toaster richColors position="bottom-right" />
+      <Toaster richColors position='bottom-right' />
       <TanStackDevtools
         config={{ position: 'bottom-right' }}
         plugins={[

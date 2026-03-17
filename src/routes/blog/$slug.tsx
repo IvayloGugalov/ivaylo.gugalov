@@ -2,20 +2,30 @@ import { createFileRoute } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { useEffect, useState } from 'react'
-import { useGetPost, useGetPostMeta, useIncrementViews } from '#/hooks/queries/blog'
+import { useGetPost, useGetPostMeta } from '#/hooks/queries/blog'
 import { CommentThread } from '#/components/blog/CommentThread'
 import { ReactionBar } from '#/components/blog/ReactionBar'
 import type { MDXModule } from 'mdx/types'
-import { orpc } from '#/orpc/client'
+import { orpc, client } from '#/orpc/client'
 
 export const Route = createFileRoute('/blog/$slug')({
   loader: async ({ params, context }) => {
+    const { slug } = params
+
     await Promise.all([
       context.queryClient.ensureQueryData(
-        orpc.blog.getPost.queryOptions({ input: { slug: params.slug } })
+        orpc.blog.getPost.queryOptions({ input: { slug } }),
       ),
       context.queryClient.ensureQueryData(
-        orpc.blog.getPostMeta.queryOptions({ input: { slug: params.slug } })
+        orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
+      ),
+      context.queryClient.ensureQueryData(
+        orpc.comments.getComments.queryOptions({ input: { postSlug: slug } }),
+      ),
+      context.queryClient.ensureQueryData(
+        orpc.comments.getReactions.queryOptions({
+          input: { targetId: slug, targetType: 'post' },
+        }),
       ),
     ])
   },
@@ -29,12 +39,11 @@ function BlogPostPage() {
   const { slug } = Route.useParams()
   const { data: post } = useGetPost(slug)
   const { data: meta } = useGetPostMeta(slug)
-  const { mutate: incrementViewsMutate } = useIncrementViews()
   const [MDXContent, setMDXContent] = useState<React.ComponentType | null>(null)
 
   useEffect(() => {
-    incrementViewsMutate({ slug })
-  }, [slug, incrementViewsMutate])
+    client.blog.incrementViews({ slug })
+  }, [slug])
 
   useEffect(() => {
     run(post.code, { ...runtime } as Parameters<typeof run>[1]).then((mod: MDXModule) => {
@@ -62,7 +71,11 @@ function BlogPostPage() {
       <ReactionBar targetId={slug} targetType='post' />
 
       <article className='prose prose-neutral dark:prose-invert max-w-none mt-10'>
-        {MDXContent ? <MDXContent /> : <p className='text-(--sea-ink-soft)'>Loading...</p>}
+        {MDXContent ? (
+          <MDXContent />
+        ) : (
+          <p className='text-(--sea-ink-soft)'>Loading...</p>
+        )}
       </article>
 
       <CommentThread postSlug={slug} />

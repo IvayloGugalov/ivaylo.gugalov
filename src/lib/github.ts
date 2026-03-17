@@ -29,7 +29,7 @@ export async function fetchWhitelistedRepos(): Promise<GitHubRepo[]> {
       }
 
       return res.json() as Promise<GitHubRepo>
-    })
+    }),
   )
 
   return results.filter((r): r is GitHubRepo => r !== null)
