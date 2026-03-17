@@ -1,19 +1,25 @@
-import { createRouter as createTanStackRouter } from '@tanstack/react-router'
+import { createRouter } from '@tanstack/react-router'
+import { setupRouterSsrQueryIntegration } from '@tanstack/react-router-ssr-query'
 import { routeTree } from './routeTree.gen'
-import { queryClient } from './lib/orpc-client'
+import { getContext, Provider } from './tanstack-query/root-provider'
+import { NotFound } from './components/NotFound'
 
 export function getRouter() {
-  const router = createTanStackRouter({
+  const context = getContext()
+
+  const routerWithContext = createRouter({
     routeTree,
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
-    context: {
-      queryClient,
-    },
+    context,
+    Wrap: ({ children }) => <Provider {...context}>{children}</Provider>,
+    defaultNotFoundComponent: NotFound,
   })
 
-  return router
+  setupRouterSsrQueryIntegration({ router: routerWithContext, queryClient: context.queryClient })
+
+  return routerWithContext
 }
 
 declare module '@tanstack/react-router' {

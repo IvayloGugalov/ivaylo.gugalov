@@ -1,4 +1,5 @@
 import { GITHUB_USERNAME, WHITELISTED_REPOS } from './whitelist'
+import { env } from '#/env'
 
 export interface GitHubRepo {
   name: string
@@ -10,7 +11,7 @@ export interface GitHubRepo {
 }
 
 export async function fetchWhitelistedRepos(): Promise<GitHubRepo[]> {
-  const token = process.env.GITHUB_TOKEN
+  const token = env.GITHUB_TOKEN
 
   const results = await Promise.all(
     WHITELISTED_REPOS.map(async (repo) => {

@@ -18,10 +18,10 @@ function ProjectsPage() {
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-16">
-      <h1 className="font-[Fraunces] text-4xl font-bold text-[var(--sea-ink)] mb-4">Projects</h1>
-      <p className="text-[var(--sea-ink-soft)] mb-10">A selection of things I've built.</p>
+      <h1 className="font-[Fraunces] text-4xl font-bold text--(--) mb-4">Projects</h1>
+      <p className="text--(--) mb-10">A selection of things I've built.</p>
       {repos.length === 0 ? (
-        <p className="text-[var(--sea-ink-soft)]">No projects configured yet. Add repos to <code>src/lib/whitelist.ts</code>.</p>
+        <p className="text--(--)">No projects configured yet. Add repos to <code>src/lib/whitelist.ts</code>.</p>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {repos.map((repo) => (

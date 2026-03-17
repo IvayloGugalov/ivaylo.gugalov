@@ -1,6 +1,5 @@
 import { useAuthStore } from '#/store/auth'
-import { orpcQuery } from '#/lib/orpc-client'
-import { useMutation } from '@tanstack/react-query'
+import { useGetReactions, useAddReaction, useDeleteReaction } from '#/hooks/queries/comments'
 
 const EMOJI_OPTIONS = ['👍', '❤️', '🔥', '🤔', '👀']
 
@@ -11,23 +10,51 @@ interface ReactionBarProps {
 
 export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
   const user = useAuthStore((s) => s.user)
+  const { data: reactions = [] } = useGetReactions(targetId, targetType)
+  const addReaction = useAddReaction(targetId, targetType)
+  const deleteReaction = useDeleteReaction(targetId, targetType)
 
-  const addReaction = useMutation(orpcQuery.comments.addReaction.mutationOptions())
+  const reactionMap = new Map(reactions.map((r) => [r.emoji, r]))
+  const isPending = addReaction.isPending || deleteReaction.isPending
+
+  function handleClick(emoji: string) {
+    const existing = reactionMap.get(emoji)
+    if (existing?.reactionId) {
+      deleteReaction.mutate({ reactionId: existing.reactionId })
+    } else {
+      addReaction.mutate({ targetId, targetType, emoji })
+    }
+  }
 
   return (
     <div className="flex gap-2 flex-wrap">
-      {EMOJI_OPTIONS.map((emoji) => (
-        <button
-          key={emoji}
-          type="button"
-          disabled={!user || addReaction.isPending}
-          title={user ? `React with ${emoji}` : 'Sign in to react'}
-          onClick={() => addReaction.mutate({ targetId, targetType, emoji })}
-          className="px-2.5 py-1 rounded-full text-sm border border-[var(--line)] hover:border-[var(--lagoon)] hover:bg-[var(--surface)] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-        >
-          {emoji}
-        </button>
-      ))}
+      {EMOJI_OPTIONS.map((emoji) => {
+        const reaction = reactionMap.get(emoji)
+        const count = reaction?.count ?? 0
+        const active = !!reaction?.reactionId
+
+        return (
+          <button
+            key={emoji}
+            type="button"
+            disabled={!user || isPending}
+            title={user ? `React with ${emoji}` : 'Sign in to react'}
+            onClick={() => handleClick(emoji)}
+            className={[
+              'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border transition-colors',
+              'disabled:opacity-40 disabled:cursor-not-allowed',
+              active
+                ? 'border--(--) bg--(--)/10 text--(--)'
+                : 'border--(--) hover:border--(--) hover:bg--(--)',
+            ].join(' ')}
+          >
+            <span>{emoji}</span>
+            {count > 0 && (
+              <span className="text-xs font-medium tabular-nums">{count}</span>
+            )}
+          </button>
+        )
+      })}
     </div>
   )
 }

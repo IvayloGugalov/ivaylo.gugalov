@@ -15,8 +15,8 @@ const LINKS = [
 function ContactPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-16">
-      <h1 className="font-[Fraunces] text-4xl font-bold text-[var(--sea-ink)] mb-4">Contact</h1>
-      <p className="text-[var(--sea-ink-soft)] mb-10">Find me on the internet.</p>
+      <h1 className="font-[Fraunces] text-4xl font-bold text--(--) mb-4">Contact</h1>
+      <p className="text--(--) mb-10">Find me on the internet.</p>
       <ul className="space-y-4">
         {LINKS.map(({ icon: Icon, label, href, hint }) => (
           <li key={label}>
@@ -24,12 +24,12 @@ function ContactPage() {
               href={href}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-4 p-4 rounded-xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--lagoon)] hover:bg-[var(--surface-strong)] transition-all group"
+              className="flex items-center gap-4 p-4 rounded-xl border border--(--) bg--(--) hover:border--(--) hover:bg--(--) transition-all group"
             >
-              <Icon size={20} className="text-[var(--lagoon)]" />
+              <Icon size={20} className="text--(--)" />
               <div>
-                <p className="font-medium text-[var(--sea-ink)] group-hover:text-[var(--lagoon)] transition-colors">{label}</p>
-                <p className="text-sm text-[var(--sea-ink-soft)]">{hint}</p>
+                <p className="font-medium text--(--) group-hover:text--(--) transition-colors">{label}</p>
+                <p className="text-sm text--(--)">{hint}</p>
               </div>
             </a>
           </li>

@@ -1,5 +1,5 @@
-export const GITHUB_USERNAME = 'your-github-username'
+export const GITHUB_USERNAME = 'IvayloGugalov'
 
 export const WHITELISTED_REPOS: string[] = [
-  // 'my-cool-project',
+  'Tiny_url',
 ]

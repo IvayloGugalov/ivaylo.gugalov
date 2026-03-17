@@ -11,8 +11,8 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
         onClick={() => onSelect(null)}
         className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
           activeTag === null
-            ? 'bg-[var(--lagoon)] text-white'
-            : 'bg-[var(--chip-bg)] border border-[var(--chip-line)] text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]'
+            ? 'bg--(--) text-white'
+            : 'bg--(--) border border--(--) text--(--) hover:text--(--)'
         }`}
       >
         All
@@ -23,8 +23,8 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
           onClick={() => onSelect(tag)}
           className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
             activeTag === tag
-              ? 'bg-[var(--lagoon)] text-white'
-              : 'bg-[var(--chip-bg)] border border-[var(--chip-line)] text-[var(--sea-ink-soft)] hover:text-[var(--sea-ink)]'
+              ? 'bg--(--) text-white'
+              : 'bg--(--) border border--(--) text--(--) hover:text--(--)'
           }`}
         >
           {tag}

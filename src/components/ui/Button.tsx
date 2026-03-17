@@ -9,9 +9,9 @@ export function Button({ variant = 'primary', size = 'md', className = '', ...pr
   const base = 'inline-flex items-center gap-2 rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2'
   const sizes = { sm: 'px-3 py-1.5 text-sm', md: 'px-4 py-2 text-sm' }
   const variants = {
-    primary: 'bg-[var(--lagoon)] text-white hover:bg-[var(--lagoon-deep)]',
-    ghost: 'hover:bg-[var(--surface)] text-[var(--sea-ink)]',
-    outline: 'border border-[var(--line)] hover:bg-[var(--surface)] text-[var(--sea-ink)]',
+    primary: 'bg--(--) text-white hover:bg--(--)',
+    ghost: 'hover:bg--(--) text--(--)',
+    outline: 'border border--(--) hover:bg--(--) text--(--)',
   }
   return <button className={`${base} ${sizes[size]} ${variants[variant]} ${className}`} {...props} />
 }

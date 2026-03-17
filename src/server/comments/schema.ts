@@ -5,6 +5,7 @@ import {
   unique,
   uuid,
 } from 'drizzle-orm/pg-core'
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 import { users } from '#/server/db/schema'
 
 export const comments = pgTable('comments', {
@@ -29,3 +30,8 @@ export const reactions = pgTable(
   },
   (t) => [unique().on(t.targetId, t.targetType, t.userId, t.emoji)],
 )
+
+export const insertCommentsSchema = createInsertSchema(comments)
+export const selectCommentsSchema = createSelectSchema(comments)
+export const insertReactionsSchema = createInsertSchema(reactions)
+export const selectReactionsSchema = createSelectSchema(reactions)

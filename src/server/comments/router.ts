@@ -4,6 +4,7 @@ import { and, eq } from 'drizzle-orm'
 import { db } from '#/server/db/client'
 import { comments, reactions } from '#/server/db/schema'
 import { publicProcedure, requireAuth } from '#/server/auth/middleware'
+import { auth } from '#/server/auth/auth'
 
 export const commentsRouter = os.router({
   getComments: publicProcedure
@@ -60,6 +61,36 @@ export const commentsRouter = os.router({
 
       if (!deleted) throw new ORPCError('NOT_FOUND', { message: 'Comment not found or not yours' })
       return { ok: true }
+    }),
+
+  getReactions: publicProcedure
+    .input(z.object({ targetId: z.string(), targetType: z.enum(['post', 'comment']) }))
+    .handler(async ({ input, context }) => {
+      const headers = (context as { headers?: Headers }).headers
+      let userId: string | null = null
+      if (headers) {
+        const session = await auth.api.getSession({ headers }).catch(() => null)
+        userId = session?.user?.id ?? null
+      }
+
+      const all = await db
+        .select()
+        .from(reactions)
+        .where(and(eq(reactions.targetId, input.targetId), eq(reactions.targetType, input.targetType)))
+
+      const grouped = new Map<string, { count: number; reactionId: string | null }>()
+      for (const r of all) {
+        const entry = grouped.get(r.emoji) ?? { count: 0, reactionId: null }
+        entry.count++
+        if (userId && r.userId === userId) entry.reactionId = r.id
+        grouped.set(r.emoji, entry)
+      }
+
+      return Array.from(grouped.entries()).map(([emoji, { count, reactionId }]) => ({
+        emoji,
+        count,
+        reactionId,
+      }))
     }),
 
   addReaction: requireAuth

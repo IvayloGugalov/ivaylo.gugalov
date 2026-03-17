@@ -11,11 +11,11 @@ describe('Button', () => {
 
   it('applies primary variant by default', () => {
     const { container } = render(<Button>Test</Button>)
-    expect(container.firstElementChild?.className).toContain('bg-[var(--lagoon)]')
+    expect(container.firstElementChild?.className).toContain('bg--(--)')
   })
 
   it('applies ghost variant', () => {
     const { container } = render(<Button variant="ghost">Ghost</Button>)
-    expect(container.firstElementChild?.className).toContain('hover:bg-[var(--surface)]')
+    expect(container.firstElementChild?.className).toContain('hover:bg--(--)')
   })
 })
