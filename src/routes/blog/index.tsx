@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { orpc } from '#/orpc/client'
-import { BlogCard } from '#/components/blog/BlogCard'
-import { TagFilter } from '#/components/blog/TagFilter'
+import { orpc } from '@/orpc/client'
+import { BlogCard } from '@/components/blog/BlogCard'
+import { TagFilter } from '@/components/blog/TagFilter'
 
 export const Route = createFileRoute('/blog/')({
   loader: async ({ context }) => {

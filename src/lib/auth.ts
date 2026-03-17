@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import { db } from '#/server/db/client'
-import { env } from '#/env'
+import { db } from '@/db/client'
+import { env } from '@/env'
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -20,6 +20,11 @@ export const auth = betterAuth({
     cookieCache: {
       enabled: true,
       maxAge: 60 * 5,
+    },
+  },
+  user: {
+    additionalFields: {
+      role: { type: 'string', required: true, input: false, defaultValue: 'user' },
     },
   },
 })

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import type { User } from '#/server/auth/auth'
+import type { User } from '@/lib/auth'
 
 interface AuthState {
   user: User | null

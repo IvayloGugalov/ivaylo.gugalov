@@ -175,9 +175,9 @@ Create `src/server/blog/router.ts`:
 ```ts
 import { os } from '@orpc/server'
 import { z } from 'zod'
-import { db } from '#/server/db/client'
-import { postsMeta } from '#/server/db/schema'
-import { publicProcedure } from '#/server/auth/middleware'
+import { db } from '@/server/db/client'
+import { postsMeta } from '@/server/db/schema'
+import { publicProcedure } from '@/server/auth/middleware'
 import { compileMdx, listPosts } from './mdx'
 import { eq, sql } from 'drizzle-orm'
 
@@ -248,9 +248,9 @@ Create `src/server/comments/router.ts`:
 import { os } from '@orpc/server'
 import { z } from 'zod'
 import { and, eq } from 'drizzle-orm'
-import { db } from '#/server/db/client'
-import { comments, reactions } from '#/server/db/schema'
-import { publicProcedure, requireAuth } from '#/server/auth/middleware'
+import { db } from '@/server/db/client'
+import { comments, reactions } from '@/server/db/schema'
+import { publicProcedure, requireAuth } from '@/server/auth/middleware'
 
 export const commentsRouter = os.router({
   getComments: publicProcedure
@@ -402,7 +402,7 @@ Create `src/routes/api/rpc/$.ts`:
 ```ts
 import { RPCHandler } from '@orpc/server/fetch'
 import { createAPIFileRoute } from '@tanstack/react-start/api'
-import { appRouter } from '#/server/router'
+import { appRouter } from '@/server/router'
 
 const handler = new RPCHandler(appRouter, {
   prefix: '/api/rpc',
@@ -457,7 +457,7 @@ import { createORPCClient } from '@orpc/client'
 import { RPCLink } from '@orpc/client/fetch'
 import { createORPCReactQueryUtils } from '@orpc/react-query'
 import { QueryClient } from '@tanstack/react-query'
-import type { AppRouter } from '#/server/router'
+import type { AppRouter } from '@/server/router'
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -647,8 +647,8 @@ git commit -m "feat(projects): add github api client and repo whitelist"
 ---
 
 **oRPC + Query agent complete.** Exports for styling-agent:
-- `import { orpcQuery } from '#/lib/orpc-client'` — typed query utils (`.queryOptions()`, `.mutationOptions()`)
-- `import { queryClient } from '#/lib/orpc-client'` — for `QueryClientProvider`
-- `import { fetchWhitelistedRepos } from '#/lib/github'` — for the projects loader
-- `import type { PostFrontmatter } from '#/server/blog/mdx'` — for type-safe blog rendering
+- `import { orpcQuery } from '@/lib/orpc-client'` — typed query utils (`.queryOptions()`, `.mutationOptions()`)
+- `import { queryClient } from '@/lib/orpc-client'` — for `QueryClientProvider`
+- `import { fetchWhitelistedRepos } from '@/lib/github'` — for the projects loader
+- `import type { PostFrontmatter } from '@/server/blog/mdx'` — for type-safe blog rendering
 - MDX blog posts return `{ code: string, frontmatter }` where `code` is a `function-body` string — use `@mdx-js/mdx`'s `run(code, { ...runtime })` client-side to render it as a React component

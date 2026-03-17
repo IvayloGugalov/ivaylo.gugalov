@@ -1,5 +1,5 @@
 import { Moon, Sun, SunMoon } from 'lucide-react'
-import { useThemeStore } from '#/store/theme'
+import { useThemeStore } from '@/store/theme'
 import { Button } from './ui/Button'
 
 export function ThemeToggle() {
@@ -16,7 +16,11 @@ export function ThemeToggle() {
     )
 
   const label =
-    mode === 'dark' ? 'Switch to auto' : mode === 'light' ? 'Switch to dark' : 'Switch to light'
+    mode === 'dark'
+      ? 'Switch to auto'
+      : mode === 'light'
+        ? 'Switch to dark'
+        : 'Switch to light'
 
   return (
     <Button

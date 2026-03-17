@@ -1,5 +1,5 @@
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
-import { orpc } from '#/orpc/client'
+import { orpc } from '@/orpc/client'
 
 export function useGetPost(slug: string) {
   return useSuspenseQuery(orpc.blog.getPost.queryOptions({ input: { slug } }))

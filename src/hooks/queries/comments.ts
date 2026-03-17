@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { orpc } from '#/orpc/client'
+import { orpc } from '@/orpc/client'
 
 export function useGetComments(postSlug: string) {
   return useQuery(orpc.comments.getComments.queryOptions({ input: { postSlug } }))
@@ -12,7 +12,7 @@ export function useCreateComment(postSlug: string, onSuccess?: () => void) {
     ...orpc.comments.createComment.mutationOptions(),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        orpc.comments.getComments.queryOptions({ input: { postSlug } })
+        orpc.comments.getComments.queryOptions({ input: { postSlug } }),
       )
       onSuccess?.()
     },
@@ -26,14 +26,16 @@ export function useDeleteComment(postSlug: string) {
     ...orpc.comments.deleteComment.mutationOptions(),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        orpc.comments.getComments.queryOptions({ input: { postSlug } })
+        orpc.comments.getComments.queryOptions({ input: { postSlug } }),
       )
     },
   })
 }
 
 export function useGetReactions(targetId: string, targetType: 'post' | 'comment') {
-  return useQuery(orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } }))
+  return useQuery(
+    orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } }),
+  )
 }
 
 export function useAddReaction(targetId: string, targetType: 'post' | 'comment') {
@@ -43,7 +45,7 @@ export function useAddReaction(targetId: string, targetType: 'post' | 'comment')
     ...orpc.comments.addReaction.mutationOptions(),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } })
+        orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } }),
       )
     },
   })
@@ -56,7 +58,7 @@ export function useDeleteReaction(targetId: string, targetType: 'post' | 'commen
     ...orpc.comments.deleteReaction.mutationOptions(),
     onSuccess: () => {
       void queryClient.invalidateQueries(
-        orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } })
+        orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } }),
       )
     },
   })

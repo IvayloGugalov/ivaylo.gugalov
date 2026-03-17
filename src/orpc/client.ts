@@ -5,15 +5,14 @@ import { createRouterClient } from '@orpc/server'
 import { createTanstackQueryUtils } from '@orpc/tanstack-query'
 import { createIsomorphicFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { appRouter } from '#/server/router'
-import type { AppRouter } from '#/server/router'
+import { appRouter } from '@/orpc/router'
+import type { AppRouter } from '@/orpc/router'
+import { createORPCContext } from './context'
 
 const getORPCClient = createIsomorphicFn()
   .server(() =>
     createRouterClient(appRouter, {
-      context: () => ({
-        headers: getRequestHeaders(),
-      }),
+      context: () => createORPCContext(getRequestHeaders()),
     }),
   )
   .client((): RouterClient<AppRouter> => {
@@ -29,3 +28,5 @@ export const orpc = createTanstackQueryUtils(client)
 
 export type Inputs = InferRouterInputs<AppRouter>
 export type Outputs = InferRouterOutputs<AppRouter>
+
+export type GithubStatsGetOutput = Outputs['github']['stats']

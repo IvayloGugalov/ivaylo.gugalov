@@ -1,17 +1,13 @@
-import {
-  pgTable,
-  text,
-  timestamp,
-  unique,
-  uuid,
-} from 'drizzle-orm/pg-core'
+import { pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core'
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
-import { users } from '#/server/db/schema'
+import { users } from '@/db/schemas'
 
 export const comments = pgTable('comments', {
   id: uuid('id').primaryKey().defaultRandom(),
   postSlug: text('post_slug').notNull(),
-  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: text('user_id')
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
   parentId: uuid('parent_id'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
@@ -24,7 +20,9 @@ export const reactions = pgTable(
     id: uuid('id').primaryKey().defaultRandom(),
     targetId: text('target_id').notNull(),
     targetType: text('target_type', { enum: ['post', 'comment'] }).notNull(),
-    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
     emoji: text('emoji').notNull(),
     createdAt: timestamp('created_at').notNull().defaultNow(),
   },

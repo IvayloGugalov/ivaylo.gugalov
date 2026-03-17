@@ -1,18 +1,20 @@
-import { os } from '@orpc/server'
 import { z } from 'zod'
-import { db } from '#/server/db/client'
-import { postsMeta } from '#/server/db/schema'
-import { publicProcedure } from '#/server/auth/middleware'
-import { compileMdx, listPosts } from './mdx'
+import { db } from '@/db/client'
+import { postsMeta } from '@/db/schemas'
+import { publicProcedure } from '@/orpc/procedures'
+import { compileMdx, listPosts } from '../../lib/mdx'
 import { eq, sql } from 'drizzle-orm'
+import { base } from '../procedures'
 
-export const blogRouter = os.router({
+export const blogRouter = base.router({
   getPosts: publicProcedure
     .input(
-      z.object({
-        tag: z.string().optional(),
-        category: z.string().optional(),
-      }).optional()
+      z
+        .object({
+          tag: z.string().optional(),
+          category: z.string().optional(),
+        })
+        .optional(),
     )
     .handler(async ({ input }) => {
       let posts = listPosts()
@@ -28,7 +30,10 @@ export const blogRouter = os.router({
   getPostMeta: publicProcedure
     .input(z.object({ slug: z.string() }))
     .handler(async ({ input }) => {
-      const [meta] = await db.select().from(postsMeta).where(eq(postsMeta.slug, input.slug))
+      const [meta] = await db
+        .select()
+        .from(postsMeta)
+        .where(eq(postsMeta.slug, input.slug))
       return { views: meta?.views ?? 0 }
     }),
 

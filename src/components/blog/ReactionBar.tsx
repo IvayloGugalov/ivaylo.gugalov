@@ -1,5 +1,9 @@
-import { useAuthStore } from '#/store/auth'
-import { useGetReactions, useAddReaction, useDeleteReaction } from '#/hooks/queries/comments'
+import { useAuthStore } from '@/store/auth'
+import {
+  useGetReactions,
+  useAddReaction,
+  useDeleteReaction,
+} from '@/hooks/queries/comments'
 
 const EMOJI_OPTIONS = ['👍', '❤️', '🔥', '🤔', '👀']
 
@@ -27,7 +31,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
   }
 
   return (
-    <div className="flex gap-2 flex-wrap">
+    <div className='flex gap-2 flex-wrap'>
       {EMOJI_OPTIONS.map((emoji) => {
         const reaction = reactionMap.get(emoji)
         const count = reaction?.count ?? 0
@@ -36,7 +40,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
         return (
           <button
             key={emoji}
-            type="button"
+            type='button'
             disabled={!user || isPending}
             title={user ? `React with ${emoji}` : 'Sign in to react'}
             onClick={() => handleClick(emoji)}
@@ -50,7 +54,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
           >
             <span>{emoji}</span>
             {count > 0 && (
-              <span className="text-xs font-medium tabular-nums">{count}</span>
+              <span className='text-xs font-medium tabular-nums'>{count}</span>
             )}
           </button>
         )

@@ -1,10 +1,10 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { fetchWhitelistedRepos } from '#/lib/github'
-import { RepoCard } from '#/components/projects/RepoCard'
+import { RepoCard } from '@/components/projects/RepoCard'
+import { client } from '@/orpc/client'
 
 export const Route = createFileRoute('/projects')({
   loader: async () => {
-    const repos = await fetchWhitelistedRepos()
+    const repos = await client.github.repos()
     return { repos }
   },
   head: () => ({
@@ -21,9 +21,7 @@ function ProjectsPage() {
       <h1 className='font-[Fraunces] text-4xl font-bold text--(--) mb-4'>Projects</h1>
       <p className='text--(--) mb-10'>A selection of things I've built.</p>
       {repos.length === 0 ? (
-        <p className='text--(--)'>
-          No projects configured yet. Add repos to <code>src/lib/whitelist.ts</code>.
-        </p>
+        <p className='text--(--)'>No public repositories found.</p>
       ) : (
         <div className='grid gap-4 sm:grid-cols-2'>
           {repos.map((repo) => (

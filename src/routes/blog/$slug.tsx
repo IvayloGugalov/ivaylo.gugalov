@@ -2,11 +2,11 @@ import { createFileRoute } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { useEffect, useState } from 'react'
-import { useGetPost, useGetPostMeta } from '#/hooks/queries/blog'
-import { CommentThread } from '#/components/blog/CommentThread'
-import { ReactionBar } from '#/components/blog/ReactionBar'
+import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog'
+import { CommentThread } from '@/components/blog/CommentThread'
+import { ReactionBar } from '@/components/blog/ReactionBar'
 import type { MDXModule } from 'mdx/types'
-import { orpc, client } from '#/orpc/client'
+import { orpc, client } from '@/orpc/client'
 
 export const Route = createFileRoute('/blog/$slug')({
   loader: async ({ params, context }) => {

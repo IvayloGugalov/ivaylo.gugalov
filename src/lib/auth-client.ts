@@ -1,7 +1,7 @@
 import { inferAdditionalFields } from 'better-auth/client/plugins'
 import { createAuthClient } from 'better-auth/react'
 import { toast } from 'sonner'
-import type { auth } from '#/server/auth/auth'
+import type { auth } from '@/lib/auth'
 
 export const authClient = createAuthClient({
   plugins: [inferAdditionalFields<typeof auth>()],

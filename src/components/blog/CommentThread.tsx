@@ -1,9 +1,13 @@
 import { useState } from 'react'
-import { useAuthStore } from '#/store/auth'
-import { authClient } from '#/lib/auth-client'
-import { useGetComments, useCreateComment, useDeleteComment } from '#/hooks/queries/comments'
-import { Avatar } from '#/components/ui/Avatar'
-import { Button } from '#/components/ui/Button'
+import { useAuthStore } from '@/store/auth'
+import { authClient } from '@/lib/auth-client'
+import {
+  useGetComments,
+  useCreateComment,
+  useDeleteComment,
+} from '@/hooks/queries/comments'
+import { Avatar } from '@/components/ui/Avatar'
+import { Button } from '@/components/ui/Button'
 
 interface CommentThreadProps {
   postSlug: string
@@ -62,7 +66,10 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
         <button
           type='button'
           onClick={() =>
-            authClient.signIn.social({ provider: 'github', callbackURL: window.location.pathname })
+            authClient.signIn.social({
+              provider: 'github',
+              callbackURL: window.location.pathname,
+            })
           }
           className='inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg bg--(--) text-white text-sm font-medium hover:bg--(--) transition-colors'
         >
@@ -116,7 +123,9 @@ function CommentItem({ comment, currentUserId, onReply, onDelete }: CommentItemP
       <Avatar src={null} alt={comment.userId ?? 'User'} size={32} />
       <div className='flex-1'>
         <div className='flex items-center gap-2 mb-1'>
-          <span className='text-sm font-medium text--(--)'>{comment.userId ?? '[deleted]'}</span>
+          <span className='text-sm font-medium text--(--)'>
+            {comment.userId ?? '[deleted]'}
+          </span>
           <span className='text-xs text--(--)'>
             {new Date(comment.createdAt).toLocaleDateString()}
           </span>
