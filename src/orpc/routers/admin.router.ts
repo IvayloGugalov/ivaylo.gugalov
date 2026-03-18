@@ -1,27 +1,28 @@
-import { count, desc, eq, sql } from 'drizzle-orm'
+import { z } from 'zod'
+import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
-import { users, comments, reactions, postsMeta } from '@/db/schemas'
+import { comments, postsMeta, reactions, users } from '@/db/schemas'
 import { adminProcedure, base } from '@/orpc/procedures'
-import { PostsInputSchema, TrendsInputSchema } from '../schemas/admin.schema'
+import { PostRowSchema, PostsInputSchema, StatsOutputSchema, TrendPointSchema, TrendsInputSchema } from '../schemas/admin.schema'
 
 export const adminRouter = base.router({
-  stats: adminProcedure.handler(async () => {
-    const [usersCount, commentsCount, reactionsCount, postsCount] = await Promise.all([
-      db.select({ count: count() }).from(users),
-      db.select({ count: count() }).from(comments),
-      db.select({ count: count() }).from(reactions),
-      db.select({ count: count() }).from(postsMeta),
+  stats: adminProcedure.output(StatsOutputSchema).handler(async () => {
+    const [usersResult, commentsResult, reactionsResult, postsResult] = await Promise.all([
+      db.select({ count: sql<number>`cast(count(*) as int)` }).from(users),
+      db.select({ count: sql<number>`cast(count(*) as int)` }).from(comments),
+      db.select({ count: sql<number>`cast(count(*) as int)` }).from(reactions),
+      db.select({ count: sql<number>`cast(count(*) as int)` }).from(postsMeta),
     ])
 
     return {
-      totalUsers: usersCount[0].count,
-      totalComments: commentsCount[0].count,
-      totalReactions: reactionsCount[0].count,
-      totalPosts: postsCount[0].count,
+      totalUsers: usersResult[0].count,
+      totalComments: commentsResult[0].count,
+      totalReactions: reactionsResult[0].count,
+      totalPosts: postsResult[0].count,
     }
   }),
 
-  trends: adminProcedure.input(TrendsInputSchema).handler(async ({ input }) => {
+  trends: adminProcedure.input(TrendsInputSchema).output(z.array(TrendPointSchema)).handler(async ({ input }) => {
     const rows = await db.execute(sql`
       WITH boundaries AS (
         SELECT
@@ -70,7 +71,7 @@ export const adminRouter = base.router({
     }))
   }),
 
-  posts: adminProcedure.input(PostsInputSchema).handler(async ({ input }) => {
+  posts: adminProcedure.input(PostsInputSchema).output(z.array(PostRowSchema)).handler(async ({ input }) => {
     const rows = await db
       .select({
         slug: postsMeta.slug,
