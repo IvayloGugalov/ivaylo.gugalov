@@ -3,16 +3,24 @@ import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
 import { comments, postsMeta, reactions, users } from '@/db/schemas'
 import { adminProcedure, base } from '@/orpc/procedures'
-import { PostRowSchema, PostsInputSchema, StatsOutputSchema, TrendPointSchema, TrendsInputSchema } from '../schemas/admin.schema'
+import {
+  PostRowSchema,
+  PostsInputSchema,
+  StatsOutputSchema,
+  TrendPointSchema,
+  TrendsInputSchema,
+} from '@/orpc/schemas/admin.schema'
 
 export const adminRouter = base.router({
   stats: adminProcedure.output(StatsOutputSchema).handler(async () => {
-    const [usersResult, commentsResult, reactionsResult, postsResult] = await Promise.all([
-      db.select({ count: sql<number>`cast(count(*) as int)` }).from(users),
-      db.select({ count: sql<number>`cast(count(*) as int)` }).from(comments),
-      db.select({ count: sql<number>`cast(count(*) as int)` }).from(reactions),
-      db.select({ count: sql<number>`cast(count(*) as int)` }).from(postsMeta),
-    ])
+    const [usersResult, commentsResult, reactionsResult, postsResult] = await Promise.all(
+      [
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(users),
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(comments),
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(reactions),
+        db.select({ count: sql<number>`cast(count(*) as int)` }).from(postsMeta),
+      ],
+    )
 
     return {
       totalUsers: usersResult[0].count,
@@ -22,8 +30,11 @@ export const adminRouter = base.router({
     }
   }),
 
-  trends: adminProcedure.input(TrendsInputSchema).output(z.array(TrendPointSchema)).handler(async ({ input }) => {
-    const rows = await db.execute(sql`
+  trends: adminProcedure
+    .input(TrendsInputSchema)
+    .output(z.array(TrendPointSchema))
+    .handler(async ({ input }) => {
+      const { rows } = await db.execute(sql`
       WITH boundaries AS (
         SELECT
           (NOW() AT TIME ZONE ${input.timezone})::date - (${input.days} - 1) AS start_day,
@@ -64,32 +75,37 @@ export const adminRouter = base.router({
       ORDER BY ds.day ASC
     `)
 
-    return rows.map((row) => ({
-      date: row.date as string,
-      comments: row.comments as number,
-      reactions: row.reactions as number,
-    }))
-  }),
+      return rows.map((row) =>
+        TrendPointSchema.parse({
+          date: row.date,
+          comments: Number(row.comments),
+          reactions: Number(row.reactions),
+        }),
+      )
+    }),
 
-  posts: adminProcedure.input(PostsInputSchema).output(z.array(PostRowSchema)).handler(async ({ input }) => {
-    const rows = await db
-      .select({
-        slug: postsMeta.slug,
-        title: postsMeta.title,
-        views: postsMeta.views,
-        commentCount: sql<number>`cast(count(${comments.id}) as int)`,
-        createdAt: postsMeta.createdAt,
-      })
-      .from(postsMeta)
-      .leftJoin(comments, eq(comments.postSlug, postsMeta.slug))
-      .groupBy(postsMeta.slug, postsMeta.title, postsMeta.views, postsMeta.createdAt)
-      .orderBy(desc(postsMeta.views))
-      .limit(input.limit)
-      .offset(input.offset)
+  posts: adminProcedure
+    .input(PostsInputSchema)
+    .output(z.array(PostRowSchema))
+    .handler(async ({ input }) => {
+      const rows = await db
+        .select({
+          slug: postsMeta.slug,
+          title: postsMeta.title,
+          views: postsMeta.views,
+          commentCount: sql<number>`cast(count(${comments.id}) as int)`,
+          createdAt: postsMeta.createdAt,
+        })
+        .from(postsMeta)
+        .leftJoin(comments, eq(comments.postSlug, postsMeta.slug))
+        .groupBy(postsMeta.slug, postsMeta.title, postsMeta.views, postsMeta.createdAt)
+        .orderBy(desc(postsMeta.views))
+        .limit(input.limit)
+        .offset(input.offset)
 
-    return rows.map((row) => ({
-      ...row,
-      createdAt: row.createdAt.toISOString(),
-    }))
-  }),
+      return rows.map((row) => ({
+        ...row,
+        createdAt: row.createdAt.toISOString(),
+      }))
+    }),
 })
