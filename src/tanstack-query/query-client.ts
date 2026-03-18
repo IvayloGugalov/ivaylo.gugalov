@@ -5,6 +5,7 @@ import {
   QueryCache,
   QueryClient,
 } from '@tanstack/react-query'
+import posthog from 'posthog-js'
 import { toast } from 'sonner'
 
 const serializer = new StandardRPCJsonSerializer()
@@ -28,16 +29,26 @@ export const makeQueryClient = () => {
       },
     },
     queryCache: new QueryCache({
-      onError: (error) => {
+      onError: (error, query) => {
         toast.error(`[QueryCache] error: ${error.message}`)
+
+        posthog.captureException(error, {
+          type: 'query',
+          queryKey: query.queryKey,
+        })
       },
       onSuccess: (_data, query) => {
         console.log('[QueryCache] fetched:', JSON.stringify(query.queryKey))
       },
     }),
     mutationCache: new MutationCache({
-      onError: (error) => {
+      onError: (error, _variables, _context, mutation) => {
         toast.error(`[MutationCache] error: ${error.message}`)
+
+        posthog.captureException(error, {
+          type: 'mutation',
+          mutationKey: mutation.options.mutationKey,
+        })
       },
     }),
   })

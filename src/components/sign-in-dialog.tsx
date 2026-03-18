@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from '@tanstack/react-router'
-import { LucideGithub, Globe, Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
-import { useLocation } from '@tanstack/react-router'
+import { Github, Loader2 } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { GoogleIcon } from '@/components/ui/google-icon'
 import {
   Dialog,
   DialogContent,
@@ -14,13 +13,12 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
-import useLocalStorage, { type AuthProvider } from '@/hooks/useLocalStorage'
-import { authClient } from '@/lib/auth-client'
+import useLocalStorage, { type AuthProvider } from '@/hooks/use-local-storage'
+import { useSocialSignIn } from '@/hooks/use-social-sign-in'
 
 export function SignInDialog() {
-  const { pathname } = useLocation()
   const { open, setOpen, closeDialog: closeSignInDialog } = useSignInDialog()
-  const [isPending, setIsPending] = useState(false)
+  const { signIn, pendingProvider, isPending } = useSocialSignIn()
   const [lastUsedProvider, setLastUsedProvider] = useState<AuthProvider | undefined>(
     undefined,
   )
@@ -29,22 +27,6 @@ export function SignInDialog() {
   useEffect(() => {
     setLastUsedProvider(authProviderStorage.value)
   }, [authProviderStorage.value])
-
-  async function handleSignIn(provider: AuthProvider) {
-    authProviderStorage.set(provider)
-    await authClient.signIn.social({
-      provider,
-      callbackURL: pathname,
-      fetchOptions: {
-        onRequest: () => setIsPending(true),
-        onSuccess: () => setIsPending(false),
-        onError: () => {
-          setIsPending(false)
-          toast.error('Failed to sign in. Please try again.')
-        },
-      },
-    })
-  }
 
   function closeDialog() {
     if (!isPending) closeSignInDialog()
@@ -61,31 +43,28 @@ export function SignInDialog() {
         </DialogHeader>
         <div className='my-6 flex flex-col gap-4'>
           <Button
-            className='relative'
-            size='lg'
-            onClick={() => handleSignIn('github')}
+            onClick={() => signIn('github')}
             disabled={isPending}
-            data-testid='github-sign-in-button'
+            className='relative'
           >
-            {isPending ? (
+            {pendingProvider === 'github' ? (
               <Loader2 className='size-4 animate-spin' />
             ) : (
-              <LucideGithub className='size-4' />
+              <Github className='size-4' />
             )}
             Continue with GitHub
             {lastUsedProvider === 'github' && <LastUsed />}
           </Button>
+
           <Button
-            className='relative border-border'
-            size='lg'
-            variant='ghost'
-            onClick={() => handleSignIn('google')}
+            onClick={() => signIn('google')}
             disabled={isPending}
+            className='relative bg-red-600 hover:bg-red-500'
           >
-            {isPending ? (
+            {pendingProvider === 'google' ? (
               <Loader2 className='size-4 animate-spin' />
             ) : (
-              <Globe className='size-4' />
+              <GoogleIcon className='size-4' />
             )}
             Continue with Google
             {lastUsedProvider === 'google' && <LastUsed />}
@@ -109,7 +88,7 @@ export function SignInDialog() {
 
 function LastUsed() {
   return (
-    <Badge variant='outline' className='absolute -top-2 -right-2 bg-background'>
+    <Badge variant='outline' className='absolute -top-2 -right-2 p-2 bg-background'>
       Last used
     </Badge>
   )

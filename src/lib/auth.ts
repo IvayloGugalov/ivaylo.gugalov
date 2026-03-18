@@ -1,7 +1,10 @@
 import { betterAuth } from 'better-auth'
+import { createAuthMiddleware } from 'better-auth/api'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
+
 import { db } from '@/db/client'
 import { env } from '@/env'
+import { getPostHogServer } from './posthog'
 
 export const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -26,6 +29,21 @@ export const auth = betterAuth({
     additionalFields: {
       role: { type: 'string', required: true, input: false, defaultValue: 'user' },
     },
+  },
+  hooks: {
+    after: createAuthMiddleware(async (ctx) => {
+      const { newSession } = ctx.context
+      if (ctx.path.startsWith('/callback/') && newSession) {
+        const posthog = getPostHogServer()
+        posthog.identify({
+          distinctId: newSession.user.id,
+          properties: {
+            email: newSession.user.email,
+            name: newSession.user.name,
+          },
+        })
+      }
+    }),
   },
 })
 

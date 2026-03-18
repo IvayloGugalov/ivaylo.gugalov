@@ -1,24 +1,25 @@
+import { useEffect } from 'react'
 import {
   HeadContent,
   Outlet,
   Scripts,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
+import type { QueryClient } from '@tanstack/react-query'
+import TanStackQueryDevtools from '@/tanstack-query/devtools'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
-import { useEffect } from 'react'
+import { Toaster } from 'sonner'
+
+import { Providers } from '@/components/providers'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
 import { SignInDialog } from '@/components/sign-in-dialog'
 import { auth } from '@/lib/auth'
 import { useAuthStore } from '@/store/auth'
 import type { User } from '@/lib/auth'
-import type { QueryClient } from '@tanstack/react-query'
-import TanStackQueryDevtools from '@/tanstack-query/devtools'
-
-import { Toaster } from 'sonner'
 import appCss from '../styles.css?url'
 
 const getSession = createServerFn({ method: 'GET' }).handler(async () => {
@@ -86,7 +87,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body className='font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]'>
-        {children}
+        <Providers>{children}</Providers>
         <Scripts />
       </body>
     </html>

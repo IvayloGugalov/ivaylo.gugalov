@@ -1,9 +1,13 @@
+import { Activity } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
+
+import { Avatar } from '@/components/ui/avatar'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Button } from '@/components/ui/button'
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { useAuthStore } from '@/store/auth'
 import { ThemeToggle } from './ThemeToggle'
-import { Avatar } from './ui/avatar'
-import { Activity } from 'react'
+import { useSignOut } from '@/hooks/use-sign-out'
 
 const NAV_LINKS = [
   { to: '/projects', label: 'Projects' },
@@ -16,6 +20,7 @@ export function Header() {
   const { pathname } = useLocation()
   const { user, isLoading } = useAuthStore()
   const { openDialog } = useSignInDialog()
+  const signOut = useSignOut({ redirectTo: '/' })
 
   const navLinks = [
     ...NAV_LINKS,
@@ -51,15 +56,34 @@ export function Header() {
           <ThemeToggle />
           {!isLoading &&
             (user ? (
-              <Avatar src={user.image ?? null} alt={user.name ?? 'User'} size={28} />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Button className='bg-transparent hover:bg-transparent hover:cursor-pointer'>
+                    <Avatar
+                      src={user.image ?? null}
+                      alt={user.name ?? 'User'}
+                      size={28}
+                    />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent align='end' className='w-fit p-2'>
+                  <Button
+                    type='button'
+                    variant='outline'
+                    onClick={async () => await signOut()}
+                  >
+                    Sign out
+                  </Button>
+                </PopoverContent>
+              </Popover>
             ) : (
-              <button
+              <Button
                 type='button'
                 onClick={openDialog}
                 className='px-3 py-1.5 rounded-lg text-sm font-medium bg--(--) text-white hover:bg--(--) transition-colors'
               >
                 Sign in
-              </button>
+              </Button>
             ))}
         </div>
       </div>

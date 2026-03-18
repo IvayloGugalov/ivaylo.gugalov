@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useLocation } from '@tanstack/react-router'
+import { Github, Loader2 } from 'lucide-react'
+
 import { useAuthStore } from '@/store/auth'
-import { authClient } from '@/lib/auth-client'
 import {
   useGetComments,
   useCreateComment,
@@ -9,14 +9,16 @@ import {
 } from '@/hooks/queries/comments'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { GoogleIcon } from '@/components/ui/google-icon'
+import { useSocialSignIn } from '@/hooks/use-social-sign-in'
 
 interface CommentThreadProps {
   postSlug: string
 }
 
 export function CommentThread({ postSlug }: CommentThreadProps) {
-  const { pathname } = useLocation()
   const user = useAuthStore((s) => s.user)
+  const { signIn, pendingProvider, isPending } = useSocialSignIn()
   const [content, setContent] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
 
@@ -65,18 +67,33 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
           </div>
         </form>
       ) : (
-        <button
-          type='button'
-          onClick={() =>
-            authClient.signIn.social({
-              provider: 'github',
-              callbackURL: pathname,
-            })
-          }
-          className='inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg bg--(--) text-white text-sm font-medium hover:bg--(--) transition-colors'
-        >
-          Sign in with GitHub to comment
-        </button>
+        <div className='my-6 flex flex-col gap-1 max-w-2xs'>
+          <Button
+            onClick={() => signIn('github')}
+            disabled={isPending}
+            className='inline-flex items-center gap-2  px-4 py-2 rounded-lg'
+          >
+            {pendingProvider === 'github' ? (
+              <Loader2 className='size-4 animate-spin' />
+            ) : (
+              <Github className='size-4' />
+            )}
+            Continue with GitHub
+          </Button>
+
+          <Button
+            onClick={() => signIn('google')}
+            disabled={isPending}
+            className='inline-flex items-center gap-2  px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500'
+          >
+            {pendingProvider === 'google' ? (
+              <Loader2 className='size-4 animate-spin' />
+            ) : (
+              <GoogleIcon className='size-4' />
+            )}
+            Continue with Google
+          </Button>
+        </div>
       )}
 
       <div className='space-y-6'>

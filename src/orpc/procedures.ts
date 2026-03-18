@@ -1,7 +1,8 @@
 import { ORPCError, os } from '@orpc/server'
 import z from 'zod'
-import type { Context } from './context'
 
+import type { Context } from './context'
+import { getPostHogServer } from '@/lib/posthog'
 import { apiRatelimit } from '@/lib/rate-limiter'
 
 export class TraceableError extends Error {
@@ -41,11 +42,13 @@ const authMiddleware = base.middleware(async ({ context, next }) => {
   return next({ context })
 })
 
-const errorMiddleware = base.middleware(async ({ path, next }) => {
+const errorMiddleware = base.middleware(async ({ path, context, next }) => {
   try {
     return await next()
   } catch (error) {
     console.error(error)
+
+    const posthog = getPostHogServer()
 
     let metadata: Record<string, unknown> = { path: path.join(':') }
 
@@ -54,6 +57,8 @@ const errorMiddleware = base.middleware(async ({ path, next }) => {
     } else if (error instanceof z.ZodError) {
       metadata.validationIssues = z.flattenError(error)
     }
+
+    posthog.captureException(error, context.session?.user.id, metadata)
 
     throw error
   }
