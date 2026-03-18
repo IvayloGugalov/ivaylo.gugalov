@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from '@tanstack/react-router'
 import { useAuthStore } from '@/store/auth'
 import { authClient } from '@/lib/auth-client'
 import {
@@ -14,6 +15,7 @@ interface CommentThreadProps {
 }
 
 export function CommentThread({ postSlug }: CommentThreadProps) {
+  const { pathname } = useLocation()
   const user = useAuthStore((s) => s.user)
   const [content, setContent] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
@@ -68,7 +70,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
           onClick={() =>
             authClient.signIn.social({
               provider: 'github',
-              callbackURL: window.location.pathname,
+              callbackURL: pathname,
             })
           }
           className='inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-lg bg--(--) text-white text-sm font-medium hover:bg--(--) transition-colors'

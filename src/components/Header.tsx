@@ -1,8 +1,9 @@
-import { Link } from '@tanstack/react-router'
+import { Link, useLocation } from '@tanstack/react-router'
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { useAuthStore } from '@/store/auth'
 import { ThemeToggle } from './ThemeToggle'
 import { Avatar } from './ui/avatar'
+import { Activity } from 'react'
 
 const NAV_LINKS = [
   { to: '/projects', label: 'Projects' },
@@ -12,8 +13,14 @@ const NAV_LINKS = [
 ] as const
 
 export function Header() {
+  const { pathname } = useLocation()
   const { user, isLoading } = useAuthStore()
   const { openDialog } = useSignInDialog()
+
+  const navLinks = [
+    ...NAV_LINKS,
+    ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' } as const] : []),
+  ]
 
   return (
     <header className='sticky top-0 z-50 border-b border--(--) bg--(--) backdrop-blur-md'>
@@ -24,20 +31,22 @@ export function Header() {
         >
           Portfolio
         </Link>
-        <nav className='hidden sm:flex items-center gap-1'>
-          {NAV_LINKS.map(({ to, label }) => (
-            <Link
-              key={to}
-              to={to}
-              className='px-3 py-1.5 rounded-lg text-sm text--(--) hover:text--(--) hover:bg--(--) transition-colors'
-              activeProps={{
-                className: 'px-3 py-1.5 rounded-lg text-sm text--(--) bg--(--)',
-              }}
-            >
-              {label}
-            </Link>
-          ))}
-        </nav>
+        <Activity mode={pathname.startsWith('/admin') ? 'hidden' : 'visible'}>
+          <nav className='hidden sm:flex items-center gap-1'>
+            {navLinks.map(({ to, label }) => (
+              <Link
+                key={to}
+                to={to}
+                className='px-3 py-1.5 rounded-lg text-sm text--(--) hover:text--(--) hover:bg--(--) transition-colors'
+                activeProps={{
+                  className: 'px-3 py-1.5 rounded-lg text-sm text--(--) bg--(--)',
+                }}
+              >
+                {label}
+              </Link>
+            ))}
+          </nav>
+        </Activity>
         <div className='flex items-center gap-2'>
           <ThemeToggle />
           {!isLoading &&
