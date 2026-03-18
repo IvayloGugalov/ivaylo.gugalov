@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { ArrowRight, Star } from 'lucide-react'
 
-import { Counter } from '@/components/counter'
+import { Counter } from '@/components/Counter'
 import { GITHUB_PROFILE_URL } from '@/constants/site'
 import { useGithubStats } from '@/orpc/queries/stats.query'
 

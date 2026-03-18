@@ -17,7 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
 import { Route as ApiRpcSplatRouteImport } from './routes/api/rpc.$'
-import { Route as ApiAuthSplatRouteImport } from './routes/api/auth.$'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
 const UsesRoute = UsesRouteImport.update({
   id: '/uses',

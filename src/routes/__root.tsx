@@ -11,6 +11,7 @@ import { getRequestHeaders } from '@tanstack/react-start/server'
 import { useEffect } from 'react'
 import Footer from '../components/Footer'
 import Header from '../components/Header'
+import { SignInDialog } from '@/components/sign-in-dialog'
 import { auth } from '@/lib/auth'
 import { useAuthStore } from '@/store/auth'
 import type { User } from '@/lib/auth'
@@ -61,6 +62,7 @@ function RootComponent() {
       <Header />
       <Outlet />
       <Footer />
+      <SignInDialog />
       <Toaster richColors position='bottom-right' />
       <TanStackDevtools
         config={{ position: 'bottom-right' }}
