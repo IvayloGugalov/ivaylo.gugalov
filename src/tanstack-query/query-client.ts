@@ -5,6 +5,7 @@ import {
   QueryCache,
   QueryClient,
 } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 const serializer = new StandardRPCJsonSerializer()
 
@@ -23,13 +24,12 @@ export const makeQueryClient = () => {
         },
       },
       hydrate: {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Safe
         deserializeData: (data) => serializer.deserialize(data.json, data.meta),
       },
     },
     queryCache: new QueryCache({
       onError: (error) => {
-        console.error('[QueryCache] error:', error.message)
+        toast.error(`[QueryCache] error: ${error.message}`)
       },
       onSuccess: (_data, query) => {
         console.log('[QueryCache] fetched:', JSON.stringify(query.queryKey))
@@ -37,7 +37,7 @@ export const makeQueryClient = () => {
     }),
     mutationCache: new MutationCache({
       onError: (error) => {
-        console.error(error.message)
+        toast.error(`[MutationCache] error: ${error.message}`)
       },
     }),
   })
