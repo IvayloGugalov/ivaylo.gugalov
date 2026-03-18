@@ -3,6 +3,7 @@ import { createInsertSchema, createSelectSchema } from 'drizzle-zod'
 
 export const postsMeta = pgTable('posts_meta', {
   slug: text('slug').primaryKey(),
+  title: text('title').notNull().default(''),
   views: integer('views').notNull().default(0),
   createdAt: timestamp('created_at').notNull().defaultNow(),
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
