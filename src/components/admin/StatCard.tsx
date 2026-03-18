@@ -9,7 +9,13 @@ interface StatCardProps {
   isError?: boolean
 }
 
-export function StatCard({ label, value, icon: Icon, isLoading, isError }: StatCardProps) {
+export function StatCard({
+  label,
+  value,
+  icon: Icon,
+  isLoading,
+  isError,
+}: StatCardProps) {
   return (
     <Card size='sm'>
       <CardHeader>

@@ -33,17 +33,21 @@ function AdminLayout() {
   // Once resolved, gate non-admins
   if (user === null || user.role !== 'admin') {
     return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
-        <p className="text-muted-foreground">You don't have permission to access this page.</p>
-        <Link to="/" className="text-sm underline">Go home</Link>
+      <div className='flex min-h-[50vh] flex-col items-center justify-center gap-4'>
+        <p className='text-muted-foreground'>
+          You don't have permission to access this page.
+        </p>
+        <Link to='/' className='text-sm underline'>
+          Go home
+        </Link>
       </div>
     )
   }
 
   return (
-    <div className="flex min-h-screen">
+    <div className='flex min-h-screen'>
       <AdminSidebar />
-      <div className="flex-1 overflow-auto p-6">
+      <div className='flex-1 overflow-auto p-6'>
         <Outlet />
       </div>
     </div>
