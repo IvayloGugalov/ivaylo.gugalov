@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { FileText, LayoutDashboard, Shield } from 'lucide-react'
+import { FileText, LayoutDashboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -15,13 +15,7 @@ const activeNavClass =
 
 export function AdminSidebar() {
   return (
-    <aside className='fixed inset-y-0 left-0 z-40 flex w-56 flex-col border-r border-border bg-card'>
-      {/* Logo / title */}
-      <div className='flex h-14 items-center gap-2 border-b border-border px-4'>
-        <Shield className='size-5 text-primary' />
-        <span className='font-semibold text-foreground'>Admin</span>
-      </div>
-
+    <aside className='sticky h-dvh pr-10 border-r border-border bg-card'>
       {/* Navigation */}
       <nav className='flex flex-col gap-1 p-3'>
         {navItems.map(({ icon: Icon, label, to, exact }) => (

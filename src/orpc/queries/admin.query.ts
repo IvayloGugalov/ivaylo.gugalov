@@ -8,9 +8,9 @@ export function useAdminStats() {
 }
 
 export function useAdminTrends(input: z.infer<typeof TrendsInputSchema>) {
-  return useQuery(orpc.admin.trends.queryOptions(input))
+  return useQuery(orpc.admin.trends.queryOptions({ input }))
 }
 
 export function useAdminPosts(input: z.infer<typeof PostsInputSchema>) {
-  return useQuery(orpc.admin.posts.queryOptions(input))
+  return useQuery(orpc.admin.posts.queryOptions({ input }))
 }

@@ -1,18 +1,8 @@
 import { z } from 'zod'
 
 export const TrendsInputSchema = z.object({
-  days: z.number().int().min(1).max(365),
-  timezone: z.string().refine(
-    (tz) => {
-      try {
-        Intl.DateTimeFormat(undefined, { timeZone: tz })
-        return true
-      } catch {
-        return false
-      }
-    },
-    { message: 'Invalid IANA timezone' },
-  ),
+  days: z.coerce.number().int().min(1).max(365),
+  timezone: z.string(),
 })
 
 export const TrendPointSchema = z.object({
@@ -37,6 +27,6 @@ export const PostRowSchema = z.object({
 })
 
 export const PostsInputSchema = z.object({
-  limit: z.number().int().min(1).max(100).default(20),
-  offset: z.number().int().min(0).default(0),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
 })

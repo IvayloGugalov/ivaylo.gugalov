@@ -45,9 +45,9 @@ function AdminLayout() {
   }
 
   return (
-    <div className='flex min-h-screen'>
+    <div className='grid grid-cols-[auto_1fr]'>
       <AdminSidebar />
-      <div className='flex-1 overflow-auto p-6'>
+      <div className='p-6'>
         <Outlet />
       </div>
     </div>
