@@ -72,9 +72,13 @@ function AdminPosts() {
             <Button variant="outline" size="sm" disabled={!hasPrev} onClick={() => setOffset((o) => Math.max(0, o - PAGE_SIZE))}>
               Previous
             </Button>
-            <span className="text-sm text-muted-foreground">
-              {offset + 1}–{offset + (posts?.length ?? 0)}
-            </span>
+            {posts.length > 0 ? (
+              <span className="text-sm text-muted-foreground">
+                {offset + 1}–{offset + posts.length}
+              </span>
+            ) : (
+              <span className="text-sm text-muted-foreground">No results</span>
+            )}
             <Button variant="outline" size="sm" disabled={!hasNext} onClick={() => setOffset((o) => o + PAGE_SIZE)}>
               Next
             </Button>

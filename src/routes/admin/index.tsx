@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
 import { Users, MessageSquare, Heart, FileText } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { useAdminStats, useAdminTrends } from '@/orpc/queries/admin.query'
 import { StatCard } from '@/components/admin/StatCard'
 import { TrendChart } from '@/components/admin/TrendChart'
@@ -31,13 +32,14 @@ function AdminDashboard() {
       {/* Day range selector */}
       <div className="flex gap-2">
         {[7, 30, 90].map((d) => (
-          <button
+          <Button
             key={d}
+            variant={days === d ? 'default' : 'outline'}
+            size="sm"
             onClick={() => setDays(d)}
-            className={`rounded px-3 py-1 text-sm ${days === d ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground hover:bg-muted/80'}`}
           >
             {d}d
-          </button>
+          </Button>
         ))}
       </div>
 

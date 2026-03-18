@@ -25,7 +25,13 @@ export const Route = createFileRoute('/admin')({
 function AdminLayout() {
   // Client-side guard (defense against CSR navigation bypassing loader)
   const user = useAuthStore((s) => s.user)
-  if (user !== null && user?.role !== 'admin') {
+  const isAuthLoading = useAuthStore((s) => s.isLoading)
+
+  // While auth is hydrating, render nothing (avoids flash)
+  if (isAuthLoading) return null
+
+  // Once resolved, gate non-admins
+  if (user === null || user.role !== 'admin') {
     return (
       <div className="flex min-h-[50vh] flex-col items-center justify-center gap-4">
         <p className="text-muted-foreground">You don't have permission to access this page.</p>
