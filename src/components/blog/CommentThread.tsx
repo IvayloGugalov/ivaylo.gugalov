@@ -6,8 +6,8 @@ import {
   useCreateComment,
   useDeleteComment,
 } from '@/hooks/queries/comments'
-import { Avatar } from '@/components/ui/Avatar'
-import { Button } from '@/components/ui/Button'
+import { Avatar } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
 
 interface CommentThreadProps {
   postSlug: string

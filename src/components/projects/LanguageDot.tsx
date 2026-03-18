@@ -19,8 +19,8 @@ export function LanguageDot({ language }: LanguageDotProps) {
   if (!language) return null
   const color = LANGUAGE_COLORS[language] ?? '#8b8b8b'
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text--(--)">
-      <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} />
+    <span className='inline-flex items-center gap-1.5 text-xs text--(--)'>
+      <span className='w-2.5 h-2.5 rounded-full' style={{ backgroundColor: color }} />
       {language}
     </span>
   )

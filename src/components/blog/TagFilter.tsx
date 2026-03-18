@@ -6,7 +6,7 @@ interface TagFilterProps {
 
 export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className='flex flex-wrap gap-2'>
       <button
         onClick={() => onSelect(null)}
         className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${

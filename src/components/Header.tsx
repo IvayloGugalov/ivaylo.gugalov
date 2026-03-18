@@ -1,7 +1,8 @@
 import { Link } from '@tanstack/react-router'
+import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { useAuthStore } from '@/store/auth'
 import { ThemeToggle } from './ThemeToggle'
-import { Avatar } from './ui/Avatar'
+import { Avatar } from './ui/avatar'
 
 const NAV_LINKS = [
   { to: '/projects', label: 'Projects' },
@@ -12,6 +13,7 @@ const NAV_LINKS = [
 
 export function Header() {
   const { user, isLoading } = useAuthStore()
+  const { openDialog } = useSignInDialog()
 
   return (
     <header className='sticky top-0 z-50 border-b border--(--) bg--(--) backdrop-blur-md'>
@@ -42,12 +44,13 @@ export function Header() {
             (user ? (
               <Avatar src={user.image ?? null} alt={user.name ?? 'User'} size={28} />
             ) : (
-              <a
-                href='/api/auth/signin/github'
+              <button
+                type='button'
+                onClick={openDialog}
                 className='px-3 py-1.5 rounded-lg text-sm font-medium bg--(--) text-white hover:bg--(--) transition-colors'
               >
                 Sign in
-              </a>
+              </button>
             ))}
         </div>
       </div>

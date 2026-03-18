@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Badge } from '@/components/ui/Badge'
+import { Badge } from '@/components/ui/badge'
 import type { PostFrontmatter } from '@/lib/mdx'
 
 interface BlogCardProps {

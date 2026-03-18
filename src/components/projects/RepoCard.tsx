@@ -1,6 +1,8 @@
 import { GitFork, Star } from 'lucide-react'
-import type { GitHubRepo } from '@/lib/github'
+import type { Endpoints } from '@octokit/types'
 import { LanguageDot } from './LanguageDot'
+
+type GitHubRepo = Endpoints['GET /repos/{owner}/{repo}']['response']['data']
 
 interface RepoCardProps {
   repo: GitHubRepo
