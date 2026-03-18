@@ -1,5 +1,6 @@
-import { FileText, LayoutDashboard, Shield } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
+import { FileText, LayoutDashboard, Shield } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 const navItems = [
   { icon: LayoutDashboard, label: 'Dashboard', to: '/admin', exact: true },
@@ -27,8 +28,8 @@ export function AdminSidebar() {
           <Link
             key={to}
             to={to}
-            className={baseNavClass}
-            activeProps={{ className: activeNavClass }}
+            className={cn(baseNavClass)}
+            activeProps={{ className: cn(activeNavClass) }}
             activeOptions={{ exact }}
           >
             <Icon className='size-4' />
