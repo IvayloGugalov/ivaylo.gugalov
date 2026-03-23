@@ -1,15 +1,19 @@
 import { Activity } from 'react'
 import { Link, useLocation } from '@tanstack/react-router'
+import { Menu } from 'lucide-react'
 
 import { Avatar } from '@/components/ui/avatar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { useAuthStore } from '@/store/auth'
-import { ThemeToggle } from './ThemeToggle'
 import { useSignOut } from '@/hooks/use-sign-out'
+import { ThemeToggle } from './ThemeToggle'
+import { GITHUB_USERNAME } from '@/constants/site'
 
 const NAV_LINKS = [
+  { to: '/about', label: 'About' },
   { to: '/projects', label: 'Projects' },
   { to: '/blog', label: 'Blog' },
   { to: '/uses', label: 'Uses' },
@@ -28,23 +32,27 @@ export function Header() {
   ]
 
   return (
-    <header className='sticky top-0 z-50 border-b border--(--) bg--(--) backdrop-blur-md'>
+    <header className='sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md'>
       <div className='mx-auto max-w-5xl px-4 h-14 flex items-center justify-between gap-6'>
+        {/* Wordmark */}
         <Link
           to='/'
-          className='font-[Fraunces] font-bold text-lg text--(--) hover:text--(--) transition-colors'
+          className='font-semibold tracking-tight text-text-primary text-sm hover:text-accent-primary transition-colors duration-200'
         >
-          Portfolio
+          {GITHUB_USERNAME}
         </Link>
+
+        {/* Desktop nav */}
         <Activity mode={pathname.startsWith('/admin') ? 'hidden' : 'visible'}>
           <nav className='hidden sm:flex items-center gap-1'>
             {navLinks.map(({ to, label }) => (
               <Link
                 key={to}
                 to={to}
-                className='px-3 py-1.5 rounded-lg text-sm text--(--) hover:text--(--) hover:bg--(--) transition-colors'
+                className='relative px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200 no-underline'
                 activeProps={{
-                  className: 'px-3 py-1.5 rounded-lg text-sm text--(--) bg--(--)',
+                  className:
+                    'relative px-3 py-1.5 text-sm text-text-primary nav-active no-underline',
                 }}
               >
                 {label}
@@ -52,13 +60,20 @@ export function Header() {
             ))}
           </nav>
         </Activity>
+
         <div className='flex items-center gap-2'>
           <ThemeToggle />
+
+          {/* Auth */}
           {!isLoading &&
             (user ? (
               <Popover>
                 <PopoverTrigger asChild>
-                  <Button className='bg-transparent hover:bg-transparent hover:cursor-pointer'>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    className='rounded-full bg-transparent hover:bg-surface-raised cursor-pointer'
+                  >
                     <Avatar
                       src={user.image ?? null}
                       alt={user.name ?? 'User'}
@@ -66,11 +81,15 @@ export function Header() {
                     />
                   </Button>
                 </PopoverTrigger>
-                <PopoverContent align='end' className='w-fit p-2'>
+                <PopoverContent
+                  align='end'
+                  className='w-fit p-2 bg-surface border-border'
+                >
                   <Button
                     type='button'
                     variant='outline'
                     onClick={async () => await signOut()}
+                    className='border-border text-text-secondary hover:text-text-primary hover:bg-surface-raised cursor-pointer'
                   >
                     Sign out
                   </Button>
@@ -80,13 +99,61 @@ export function Header() {
               <Button
                 type='button'
                 onClick={openDialog}
-                className='px-3 py-1.5 rounded-lg text-sm font-medium bg--(--) text-white hover:bg--(--) transition-colors'
+                className='px-3 py-1.5 h-auto text-sm font-medium bg-accent-primary text-background hover:bg-foreground hover:text-background transition-colors rounded-md cursor-pointer'
               >
                 Sign in
               </Button>
             ))}
+
+          {/* Mobile hamburger */}
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button
+                variant='ghost'
+                size='icon'
+                className='sm:hidden bg-transparent hover:bg-surface-raised text-text-secondary cursor-pointer'
+                aria-label='Open menu'
+              >
+                <Menu size={20} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side='right'
+              className='bg-background/95 backdrop-blur-md border-border w-64'
+            >
+              <nav className='flex flex-col gap-1 mt-8'>
+                {navLinks.map(({ to, label }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className='px-4 py-3 text-sm text-text-secondary hover:text-accent-primary hover:bg-surface transition-colors rounded-md no-underline'
+                    activeProps={{
+                      className:
+                        'px-4 py-3 text-sm text-text-primary bg-surface rounded-md no-underline',
+                    }}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </nav>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
+
+      <style>{`
+        .nav-active::after {
+          content: '';
+          position: absolute;
+          bottom: -1px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: calc(100% - 1.5rem);
+          height: 2px;
+          background: #22d3ee;
+          border-radius: 1px;
+        }
+      `}</style>
     </header>
   )
 }

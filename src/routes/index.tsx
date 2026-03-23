@@ -1,6 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
-import { ArrowRight, Star } from 'lucide-react'
+import { motion } from 'motion/react'
+import { Github, Linkedin, Mail, ChevronDown, Star } from 'lucide-react'
 
+import Aurora from '@/components/ui/reactbits/Aurora'
+import SplitText from '@/components/ui/reactbits/SplitText'
 import { Counter } from '@/components/Counter'
 import { GITHUB_PROFILE_URL } from '@/constants/site'
 import { useGithubStats } from '@/orpc/queries/stats.query'
@@ -12,7 +15,6 @@ export const Route = createFileRoute('/')({
 
 function GithubStats() {
   const { data } = useGithubStats()
-
   if (!data) return null
 
   return (
@@ -20,16 +22,12 @@ function GithubStats() {
       href={GITHUB_PROFILE_URL}
       target='_blank'
       rel='noopener noreferrer'
-      className='inline-flex items-center gap-3 rounded-xl border border-(--line) px-4 py-3 transition-colors hover:bg-(--surface-raised)'
-      style={{
-        background:
-          'linear-gradient(135deg, color-mix(in srgb, #fee000 8%, var(--surface)), color-mix(in srgb, #ffce63 4%, var(--surface)))',
-      }}
+      className='inline-flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-accent-glow transition-all duration-200 cursor-pointer'
     >
-      <Star className='size-6 text-[#fee000]' fill='#fee000' />
+      <Star className='size-5 text-yellow-400' fill='currentColor' />
       <div className='flex flex-col leading-tight'>
-        <Counter value={data.stars} className='text-lg font-semibold text-(--sea-ink)' />
-        <span className='text-xs text-(--sea-ink-soft)'>GitHub stars</span>
+        <Counter value={data.stars} className='text-lg font-semibold text-text-primary' />
+        <span className='text-xs text-text-muted'>GitHub stars</span>
       </div>
     </a>
   )
@@ -37,43 +35,141 @@ function GithubStats() {
 
 function HomePage() {
   return (
-    <main className='mx-auto max-w-4xl px-4 py-24'>
+    <main className='relative min-h-screen flex flex-col items-center justify-center'>
+      {/* Aurora background */}
+      <div className='absolute inset-0 -z-10 opacity-40'>
+        <Aurora
+          colorStops={['#22d3ee', '#0891b2', '#164e63']}
+          amplitude={1.0}
+          blend={0.5}
+          speed={0.4}
+        />
+      </div>
+
+      {/* Subtle vignette */}
       <div
-        className='absolute inset-0 pointer-events-none'
+        className='absolute inset-0 -z-10 pointer-events-none'
         style={{
           background:
-            'radial-gradient(ellipse 60% 40% at 50% 0%, var(--hero-a), transparent), radial-gradient(ellipse 40% 30% at 70% 30%, var(--hero-b), transparent)',
+            'radial-gradient(ellipse 80% 60% at 50% 0%, transparent 40%, #080c10 100%)',
         }}
       />
-      <div className='relative'>
-        <p className='text-sm font-semibold tracking-widest uppercase text-(--lagoon) mb-4'>
+
+      <div className='relative mx-auto max-w-4xl px-4 py-28 text-left w-full'>
+        {/* Kicker */}
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className='text-xs font-semibold tracking-[0.2em] uppercase text-accent-primary mb-6'
+        >
           Software Engineer
-        </p>
-        <h1 className='font-[Fraunces] text-5xl sm:text-6xl font-bold text-(--sea-ink) mb-6 leading-tight'>
-          Building things
-          <br />
-          that matter.
-        </h1>
-        <p className='text-lg text-(--sea-ink-soft) max-w-xl mb-10'>
-          I design and build full-stack web applications with a focus on developer
-          experience, performance, and clean interfaces.
-        </p>
-        <div className='flex gap-4 mb-10'>
-          <Link
-            to='/projects'
-            className='inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-(--lagoon) text-white font-medium hover:bg-(--lagoon-deep) transition-colors'
-          >
-            View projects <ArrowRight size={16} />
-          </Link>
+        </motion.p>
+
+        {/* Heading line 1 — SplitText char animation */}
+        <SplitText
+          text='Building things'
+          tag='h1'
+          className='text-6xl md:text-8xl font-bold tracking-tighter text-text-primary leading-[1.05] mb-0'
+          splitType='chars'
+          delay={20}
+          duration={0.8}
+          from={{ opacity: 0, y: 50 }}
+          to={{ opacity: 1, y: 0 }}
+          threshold={0.01}
+          rootMargin='0px'
+          textAlign='left'
+        />
+
+        {/* Heading line 2 — gradient span */}
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className='text-6xl md:text-8xl font-bold tracking-tighter leading-[1.05] mb-8'
+        >
+          for <span className='gradient-text'>the web</span>
+          <span className='text-text-primary'>.</span>
+        </motion.div>
+
+        {/* Subtext */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className='text-lg text-text-secondary max-w-xl mb-10'
+        >
+          Full-stack engineer. .NET + React. Writing about it.
+        </motion.p>
+
+        {/* CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.85, ease: [0.16, 1, 0.3, 1] }}
+          className='mb-12'
+        >
           <Link
             to='/blog'
-            className='inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-(--line) text-(--sea-ink) font-medium hover:bg-(--surface) transition-colors'
+            className='inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent-primary text-background font-semibold text-sm hover:bg-foreground hover:text-background transition-all duration-200 cursor-pointer no-underline'
+            style={{ ['--hover-shadow' as string]: '0 0 24px #22d3ee66' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow = '0 0 24px #22d3ee66'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow = ''
+            }}
           >
-            Read blog
+            Read the blog
           </Link>
-        </div>
+        </motion.div>
+
+        {/* Social icons */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+          className='flex items-center gap-4 mb-12'
+        >
+          <a
+            href='https://github.com/your-username'
+            target='_blank'
+            rel='noopener noreferrer'
+            aria-label='GitHub'
+            className='text-text-muted hover:text-accent-primary transition-colors duration-200 cursor-pointer'
+          >
+            <Github size={20} />
+          </a>
+          <a
+            href='https://linkedin.com/in/your-profile'
+            target='_blank'
+            rel='noopener noreferrer'
+            aria-label='LinkedIn'
+            className='text-text-muted hover:text-accent-primary transition-colors duration-200 cursor-pointer'
+          >
+            <Linkedin size={20} />
+          </a>
+          <a
+            href='mailto:you@example.com'
+            aria-label='Email'
+            className='text-text-muted hover:text-accent-primary transition-colors duration-200 cursor-pointer'
+          >
+            <Mail size={20} />
+          </a>
+        </motion.div>
+
         <GithubStats />
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5, delay: 1.2 }}
+        className='absolute bottom-8 left-1/2 -translate-x-1/2 text-text-muted animate-bounce'
+      >
+        <ChevronDown size={22} />
+      </motion.div>
     </main>
   )
 }
