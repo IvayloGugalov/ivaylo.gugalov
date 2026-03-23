@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-type ThemeMode = 'light' | 'dark' | 'auto'
+type ThemeMode = 'light' | 'dark'
 
 interface ThemeState {
   mode: ThemeMode
@@ -9,40 +9,43 @@ interface ThemeState {
   toggle: () => void
 }
 
+function resolveSystemTheme(): ThemeMode {
+  if (typeof window === 'undefined') return 'dark'
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+}
+
 function applyTheme(mode: ThemeMode) {
   if (typeof document === 'undefined') return
-  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-  const resolved = mode === 'auto' ? (prefersDark ? 'dark' : 'light') : mode
   const root = document.documentElement
   root.classList.remove('light', 'dark')
-  root.classList.add(resolved)
-  if (mode === 'auto') {
-    root.removeAttribute('data-theme')
-  } else {
-    root.setAttribute('data-theme', mode)
-  }
-  root.style.colorScheme = resolved
+  root.classList.add(mode)
+  root.setAttribute('data-theme', mode)
+  root.style.colorScheme = mode
 }
 
 export const useThemeStore = create<ThemeState>()(
   persist(
     (set, get) => ({
-      mode: 'auto',
+      mode: resolveSystemTheme(),
       setMode: (mode) => {
         set({ mode })
         applyTheme(mode)
       },
       toggle: () => {
-        const current = get().mode
-        const next: ThemeMode =
-          current === 'light' ? 'dark' : current === 'dark' ? 'auto' : 'light'
+        const next: ThemeMode = get().mode === 'dark' ? 'light' : 'dark'
         get().setMode(next)
       },
     }),
     {
       name: 'theme',
       onRehydrateStorage: () => (state) => {
-        if (state) applyTheme(state.mode)
+        if (!state) return
+        // Migrate old 'auto' value from previous storage
+        const mode = (state.mode as string) === 'auto'
+          ? resolveSystemTheme()
+          : state.mode
+        applyTheme(mode)
+        if (mode !== state.mode) state.mode = mode
       },
     },
   ),

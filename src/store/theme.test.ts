@@ -1,24 +1,30 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, beforeEach } from 'vitest'
 import { useThemeStore } from './theme'
 
 describe('useThemeStore', () => {
-  it('initializes with auto mode', () => {
-    expect(useThemeStore.getState().mode).toBe('auto')
+  beforeEach(() => {
+    useThemeStore.getState().setMode('dark')
+  })
+
+  it('initializes with dark mode', () => {
+    useThemeStore.setState({ mode: 'dark' })
+    expect(useThemeStore.getState().mode).toBe('dark')
   })
 
   it('setMode changes the mode', () => {
-    useThemeStore.getState().setMode('dark')
-    expect(useThemeStore.getState().mode).toBe('dark')
-    useThemeStore.getState().setMode('auto')
+    useThemeStore.getState().setMode('light')
+    expect(useThemeStore.getState().mode).toBe('light')
   })
 
-  it('toggle cycles: auto → light → dark → auto', () => {
-    useThemeStore.getState().setMode('auto')
+  it('toggle flips dark → light', () => {
+    useThemeStore.getState().setMode('dark')
     useThemeStore.getState().toggle()
     expect(useThemeStore.getState().mode).toBe('light')
+  })
+
+  it('toggle flips light → dark', () => {
+    useThemeStore.getState().setMode('light')
     useThemeStore.getState().toggle()
     expect(useThemeStore.getState().mode).toBe('dark')
-    useThemeStore.getState().toggle()
-    expect(useThemeStore.getState().mode).toBe('auto')
   })
 })
