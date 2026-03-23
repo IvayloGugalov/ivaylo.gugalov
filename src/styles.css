@@ -13,6 +13,20 @@
 /* ── Design tokens ─────────────────────────────────────────── */
 @theme {
   --font-sans: 'Geist Sans', ui-sans-serif, system-ui, sans-serif;
+
+  /* Surface palette (dark defaults) */
+  --color-surface: #0d1117;
+  --color-surface-raised: #161b22;
+
+  /* Accent */
+  --color-accent-primary: #22d3ee;
+  --color-accent-glow: #06b6d4;
+  --color-accent-muted: #164e63;
+
+  /* Text */
+  --color-text-primary: #f0f6fc;
+  --color-text-secondary: #8b949e;
+  --color-text-muted: #484f58;
 }
 
 /* ── shadcn semantic tokens (dark-only) ────────────────────── */
@@ -49,15 +63,6 @@
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  /* Custom design tokens (dark defaults) */
-  --surface: #0d1117;
-  --surface-raised: #161b22;
-  --text-primary: #f0f6fc;
-  --text-secondary: #8b949e;
-  --text-muted: #484f58;
-  --accent-primary: #22d3ee;
-  --accent-glow: #06b6d4;
-  --accent-muted: #164e63;
 }
 
 /* ── Light theme overrides ────────────────────────────── */
@@ -93,15 +98,15 @@ html.light {
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  /* Custom tokens */
-  --surface: #f1f5f9;
-  --surface-raised: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --accent-primary: #0891b2;
-  --accent-glow: #0891b2;
-  --accent-muted: #e0f2fe;
+  /* Custom color token overrides */
+  --color-surface: #f1f5f9;
+  --color-surface-raised: #e2e8f0;
+  --color-text-primary: #0f172a;
+  --color-text-secondary: #475569;
+  --color-text-muted: #94a3b8;
+  --color-accent-primary: #0891b2;
+  --color-accent-glow: #0891b2;
+  --color-accent-muted: #e0f2fe;
 }
 
 /* ── shadcn → Tailwind token bridge ───────────────────────── */
@@ -143,14 +148,6 @@ html.light {
   --radius-lg: calc(var(--radius) * 1.25);
   --radius-xl: calc(var(--radius) * 1.5);
   --radius-2xl: calc(var(--radius) * 2);
-  --color-surface: var(--surface);
-  --color-surface-raised: var(--surface-raised);
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-accent-primary: var(--accent-primary);
-  --color-accent-glow: var(--accent-glow);
-  --color-accent-muted: var(--accent-muted);
 }
 
 /* ── Base layer ───────────────────────────────────────────── */
@@ -186,7 +183,7 @@ button {
 code {
   font-size: 0.9em;
   border: 1px solid var(--border);
-  background: var(--surface-raised, #161b22);
+  background: var(--color-surface-raised);
   border-radius: 6px;
   padding: 2px 7px;
   font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, monospace;
@@ -237,7 +234,7 @@ pre code {
 /* ── Focus ring ───────────────────────────────────────────── */
 :focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #22d3ee, 0 0 0 4px #080c10;
+  box-shadow: 0 0 0 2px var(--color-accent-primary), 0 0 0 4px var(--background);
 }
 
 /* ── Skills progress bars ─────────────────────────────────── */
