@@ -1,5 +1,29 @@
-import { describe, expect, it, beforeEach } from 'vitest'
+// @vitest-environment jsdom
+import { describe, expect, it, beforeEach, beforeAll, vi } from 'vitest'
+
+// Must be hoisted so it runs before module-level code in theme.ts
+const _mockMatchMedia = vi.hoisted(() => {
+  Object.defineProperty(globalThis, 'matchMedia', {
+    writable: true,
+    configurable: true,
+    value: (query: string) => ({
+      matches: query.includes('dark'),
+      media: query,
+      onchange: null,
+      addListener: () => {},
+      removeListener: () => {},
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    }),
+  })
+})
+
 import { useThemeStore } from './theme'
+
+beforeAll(() => {
+  // matchMedia already installed via vi.hoisted above
+})
 
 describe('useThemeStore', () => {
   beforeEach(() => {

@@ -45,7 +45,7 @@ export const useThemeStore = create<ThemeState>()(
           ? resolveSystemTheme()
           : state.mode
         applyTheme(mode)
-        if (mode !== state.mode) state.mode = mode
+        if (mode !== state.mode) useThemeStore.setState({ mode })
       },
     },
   ),
