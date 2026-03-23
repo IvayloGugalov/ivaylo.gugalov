@@ -1,4 +1,4 @@
-import { Moon, Sun, SunMoon } from 'lucide-react'
+import { Moon, Sun } from 'lucide-react'
 import { useThemeStore } from '@/store/theme'
 import { Button } from './ui/button'
 
@@ -6,29 +6,15 @@ export function ThemeToggle() {
   const mode = useThemeStore((s) => s.mode)
   const toggle = useThemeStore((s) => s.toggle)
 
-  const icon =
-    mode === 'dark' ? (
-      <Moon size={16} />
-    ) : mode === 'light' ? (
-      <Sun size={16} />
-    ) : (
-      <SunMoon size={16} />
-    )
-
-  const label =
-    mode === 'dark'
-      ? 'Switch to auto'
-      : mode === 'light'
-        ? 'Switch to dark'
-        : 'Switch to light'
-
   return (
     <Button
+      variant='ghost'
+      size='icon'
       onClick={toggle}
-      aria-label={label}
-      className='p-2 rounded-lg hover:bg--(--) transition-colors text--(--) hover:text--(--)'
+      aria-label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+      className='rounded-lg bg-transparent hover:bg-surface-raised text-text-secondary hover:text-text-primary transition-colors cursor-pointer'
     >
-      {icon}
+      {mode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>
   )
 }
