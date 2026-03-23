@@ -152,22 +152,22 @@ function CommentItem({ comment, currentUserId, onReply, onDelete }: CommentItemP
         <p className='text-sm text--(--)'>{comment.content}</p>
         <div className='flex gap-3 mt-2'>
           {onReply && (
-            <button
+            <Button
               type='button'
               onClick={onReply}
               className='text-xs text--(--) hover:text--(--) transition-colors'
             >
               Reply
-            </button>
+            </Button>
           )}
           {isOwn && (
-            <button
+            <Button
               type='button'
               onClick={onDelete}
               className='text-xs text--(--) hover:text-red-500 transition-colors'
             >
               Delete
-            </button>
+            </Button>
           )}
         </div>
       </div>

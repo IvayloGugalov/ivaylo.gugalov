@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 // Set required env vars before module import
-process.env.DATABASE_URL = process.env.DATABASE_URL ?? 'postgresql://test:test@localhost/test'
+process.env.DATABASE_URL =
+  process.env.DATABASE_URL ?? 'postgresql://test:test@localhost/test'
 process.env.BETTER_AUTH_SECRET = process.env.BETTER_AUTH_SECRET ?? 'test-secret'
 
 import { useAuthStore } from './auth'

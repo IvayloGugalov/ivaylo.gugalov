@@ -13,12 +13,14 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "auth:generate": "bunx @better-auth/cli generate",
-    "lint": "biome lint --write .",
-    "format": "biome format --write .",
-    "check": "biome check --write ."
+    "lint": "biome lint --write src/.",
+    "format": "biome format --write src/.",
+    "check": "biome check --write src/."
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource/geist-sans": "^5.2.5",
+    "@gsap/react": "^2.1.2",
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@neondatabase/serverless": "^1.0.2",
@@ -45,8 +47,10 @@
     "drizzle-orm": "^0.45.1",
     "drizzle-zod": "^0.8.3",
     "gray-matter": "^4.0.3",
+    "gsap": "^3.14.2",
     "lucide-react": "^0.577.0",
     "motion": "^12.38.0",
+    "ogl": "^1.0.11",
     "posthog-js": "^1.361.1",
     "posthog-node": "^5.28.3",
     "radix-ui": "^1.4.3",

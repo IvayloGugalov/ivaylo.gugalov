@@ -4,6 +4,7 @@ import {
   useAddReaction,
   useDeleteReaction,
 } from '@/hooks/queries/comments'
+import { Button } from '@/components/ui/button'
 
 const EMOJI_OPTIONS = ['👍', '❤️', '🔥', '🤔', '👀']
 
@@ -38,7 +39,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
         const active = !!reaction?.reactionId
 
         return (
-          <button
+          <Button
             key={emoji}
             type='button'
             disabled={!user || isPending}
@@ -56,7 +57,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
             {count > 0 && (
               <span className='text-xs font-medium tabular-nums'>{count}</span>
             )}
-          </button>
+          </Button>
         )
       })}
     </div>

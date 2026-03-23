@@ -9,7 +9,9 @@ import { z } from 'zod'
 
 const PostFrontmatterSchema = z.object({
   title: z.string(),
-  date: z.union([z.string(), z.date()]).transform((v) => (v instanceof Date ? v.toISOString() : v)),
+  date: z
+    .union([z.string(), z.date()])
+    .transform((v) => (v instanceof Date ? v.toISOString() : v)),
   tags: z.array(z.string()),
   category: z.string(),
   description: z.string(),
@@ -26,9 +28,14 @@ export interface PostFrontmatter {
 const POSTS_DIR = join(process.cwd(), 'content', 'posts')
 
 // Per-slug cache: slug → { code, mtime, frontmatter }
-const cache = new Map<string, { code: string; mtime: number; frontmatter: PostFrontmatter }>()
+const cache = new Map<
+  string,
+  { code: string; mtime: number; frontmatter: PostFrontmatter }
+>()
 
-export async function compileMdx(slug: string): Promise<{ code: string; frontmatter: PostFrontmatter }> {
+export async function compileMdx(
+  slug: string,
+): Promise<{ code: string; frontmatter: PostFrontmatter }> {
   const filePath = join(POSTS_DIR, `${slug}.mdx`)
   // Prevent path traversal
   if (!filePath.startsWith(POSTS_DIR + sep)) throw new ORPCError('NOT_FOUND')
@@ -46,9 +53,7 @@ export async function compileMdx(slug: string): Promise<{ code: string; frontmat
   const compiled = await compile(content, {
     outputFormat: 'function-body',
     remarkPlugins: [remarkGfm],
-    rehypePlugins: [
-      [rehypeShiki, { theme: 'github-dark-dimmed' }],
-    ],
+    rehypePlugins: [[rehypeShiki, { theme: 'github-dark-dimmed' }]],
   })
 
   const code = String(compiled)
@@ -59,13 +64,15 @@ export async function compileMdx(slug: string): Promise<{ code: string; frontmat
 export function listPosts(): Array<PostFrontmatter & { slug: string }> {
   const files = readdirSync(POSTS_DIR).filter((f) => f.endsWith('.mdx'))
 
-  return files.map((file) => {
-    const slug = file.replace('.mdx', '')
-    const raw = readFileSync(join(POSTS_DIR, file), 'utf-8')
-    const { data } = matter(raw)
-    const parsed = PostFrontmatterSchema.safeParse(data)
-    if (!parsed.success) return null
-    return { ...parsed.data, slug }
-  }).filter((p): p is PostFrontmatter & { slug: string } => p !== null)
+  return files
+    .map((file) => {
+      const slug = file.replace('.mdx', '')
+      const raw = readFileSync(join(POSTS_DIR, file), 'utf-8')
+      const { data } = matter(raw)
+      const parsed = PostFrontmatterSchema.safeParse(data)
+      if (!parsed.success) return null
+      return { ...parsed.data, slug }
+    })
+    .filter((p): p is PostFrontmatter & { slug: string } => p !== null)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }

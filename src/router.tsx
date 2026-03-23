@@ -17,7 +17,10 @@ export function getRouter() {
     defaultNotFoundComponent: NotFound,
   })
 
-  setupRouterSsrQueryIntegration({ router: routerWithContext, queryClient: context.queryClient })
+  setupRouterSsrQueryIntegration({
+    router: routerWithContext,
+    queryClient: context.queryClient,
+  })
 
   return routerWithContext
 }

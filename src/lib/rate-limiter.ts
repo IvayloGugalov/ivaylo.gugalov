@@ -4,7 +4,13 @@ type WindowString = `${number} ${'ms' | 's' | 'm' | 'h' | 'd'}`
 
 function parseWindow(w: WindowString): number {
   const [n, unit] = w.split(' ')
-  const units: Record<string, number> = { ms: 1, s: 1_000, m: 60_000, h: 3_600_000, d: 86_400_000 }
+  const units: Record<string, number> = {
+    ms: 1,
+    s: 1_000,
+    m: 60_000,
+    h: 3_600_000,
+    d: 86_400_000,
+  }
   return Number(n) * (units[unit] ?? 1_000)
 }
 
