@@ -7,7 +7,7 @@ import { join, sep } from 'node:path'
 import { ORPCError } from '@orpc/server'
 import { z } from 'zod'
 
-const PostFrontmatterSchema = z.object({
+export const PostFrontmatterSchema = z.object({
   title: z.string(),
   date: z
     .union([z.string(), z.date()])

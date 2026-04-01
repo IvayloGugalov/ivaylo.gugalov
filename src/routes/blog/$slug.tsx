@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { useEffect, useState } from 'react'
-import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog'
+import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog.query'
 import { CommentThread } from '@/components/blog/CommentThread'
 import { ReactionBar } from '@/components/blog/ReactionBar'
 import type { MDXModule } from 'mdx/types'
@@ -12,26 +12,34 @@ export const Route = createFileRoute('/blog/$slug')({
   loader: async ({ params, context }) => {
     const { slug } = params
 
-    await Promise.all([
-      context.queryClient.ensureQueryData(
-        orpc.blog.getPost.queryOptions({ input: { slug } }),
-      ),
-      context.queryClient.ensureQueryData(
-        orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
-      ),
-      context.queryClient.ensureQueryData(
-        orpc.comments.getComments.queryOptions({ input: { postSlug: slug } }),
-      ),
-      context.queryClient.ensureQueryData(
-        orpc.comments.getReactions.queryOptions({
-          input: { targetId: slug, targetType: 'post' },
-        }),
-      ),
-    ])
+    const post = await context.queryClient.ensureQueryData(
+      orpc.blog.getPost.queryOptions({ input: { slug } }),
+    )
+
+    if (!post) throw notFound()
+
+    context.queryClient.ensureQueryData(
+      orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
+    )
+
+    context.queryClient.ensureQueryData(
+      orpc.comments.getReactions.queryOptions({
+        input: { targetId: slug, targetType: 'post' },
+      }),
+    )
+
+    context.queryClient.prefetchInfiniteQuery(
+      orpc.comments.listComments.infiniteOptions({
+        input: () => ({ postSlug: slug }),
+        initialPageParam: undefined,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      }),
+    )
   },
   head: ({ loaderData: _ }) => ({
     meta: [{ title: 'Blog Post | Portfolio' }],
   }),
+  notFoundComponent: () => <ErrorComponent error={new Error('Post not found')} />,
   component: BlogPostPage,
 })
 

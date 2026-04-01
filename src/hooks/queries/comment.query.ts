@@ -1,8 +1,25 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { orpc } from '@/orpc/client'
+import {
+  keepPreviousData,
+  useInfiniteQuery,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query'
+import { orpc, type CommentsListInput } from '@/orpc/client'
 
-export function useGetComments(postSlug: string) {
-  return useQuery(orpc.comments.getComments.queryOptions({ input: { postSlug } }))
+export function useListComments(
+  input: (pageParam: Date | undefined) => CommentsListInput,
+  enabled = true,
+) {
+  return useInfiniteQuery(
+    orpc.comments.listComments.infiniteOptions({
+      input: input,
+      initialPageParam: undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      placeholderData: keepPreviousData,
+      enabled,
+    }),
+  )
 }
 
 export function useCreateComment(postSlug: string, onSuccess?: () => void) {
@@ -11,9 +28,9 @@ export function useCreateComment(postSlug: string, onSuccess?: () => void) {
   return useMutation({
     ...orpc.comments.createComment.mutationOptions(),
     onSuccess: () => {
-      void queryClient.invalidateQueries(
-        orpc.comments.getComments.queryOptions({ input: { postSlug } }),
-      )
+      void queryClient.invalidateQueries({
+        queryKey: orpc.comments.listComments.key({ input: { postSlug } }),
+      })
       onSuccess?.()
     },
   })
@@ -25,9 +42,9 @@ export function useDeleteComment(postSlug: string) {
   return useMutation({
     ...orpc.comments.deleteComment.mutationOptions(),
     onSuccess: () => {
-      void queryClient.invalidateQueries(
-        orpc.comments.getComments.queryOptions({ input: { postSlug } }),
-      )
+      void queryClient.invalidateQueries({
+        queryKey: orpc.comments.listComments.key({ input: { postSlug } }),
+      })
     },
   })
 }

@@ -1,38 +1,68 @@
 import { ORPCError } from '@orpc/server'
-import { z } from 'zod'
-import { and, eq } from 'drizzle-orm'
+import { and, asc, desc, eq, gt, lt } from 'drizzle-orm'
+
 import { db } from '@/db/client'
-import { comments, reactions } from '@/db/schemas'
+import { comments, reactions, selectCommentsSchema } from '@/db/schemas'
 import { protectedProcedure, publicProcedure } from '@/orpc/procedures'
 import { auth } from '@/lib/auth'
 import { commentRatelimit, reactionRatelimit } from '@/lib/rate-limiter'
-import { base } from '../procedures'
+import {
+  AddReactionInputSchema,
+  AddReactionOutputSchema,
+  CreateCommentInputSchema,
+  DeleteCommentInputSchema,
+  DeleteReactionInputSchema,
+  GetReactionsInputSchema,
+  GetReactionsOutputSchema,
+  ListCommentsInputSchema,
+  ListCommentsOutputSchema,
+} from '../schemas/comments.schema'
+import { EmptyOutputSchema } from '../schemas/common.schema'
 
-export const commentsRouter = base.router({
-  getComments: publicProcedure
-    .input(z.object({ postSlug: z.string() }))
-    .handler(async ({ input }) => {
-      const all = await db
-        .select()
-        .from(comments)
-        .where(eq(comments.postSlug, input.postSlug))
-        .orderBy(comments.createdAt)
+export const commentsRouter = {
+  listComments: publicProcedure
+    .input(ListCommentsInputSchema)
+    .output(ListCommentsOutputSchema)
+    .handler(async ({ input, context }) => {
+      function getCursorFilter() {
+        if (!input.cursor) return
+
+        return input.sort === 'newest'
+          ? lt(comments.createdAt, input.cursor)
+          : gt(comments.createdAt, input.cursor)
+      }
+
+      const all = await context.db.query.comments.findMany({
+        where: and(eq(comments.postSlug, input.postSlug), getCursorFilter()),
+        limit: input.limit,
+        with: {
+          user: {
+            columns: {
+              name: true,
+              image: true,
+              role: true,
+              id: true,
+            },
+          },
+        },
+        orderBy:
+          input.sort === 'newest' ? desc(comments.createdAt) : asc(comments.createdAt),
+      })
 
       const topLevel = all.filter((c) => c.parentId === null)
-      return topLevel.map((parent) => ({
-        ...parent,
-        replies: all.filter((c) => c.parentId === parent.id),
-      }))
+
+      return {
+        items: topLevel.map((parent) => ({
+          ...parent,
+          replies: all.filter((c) => c.parentId === parent.id),
+        })),
+        nextCursor: all.length >= input.limit ? all.at(-1)?.createdAt : undefined,
+      }
     }),
 
   createComment: protectedProcedure
-    .input(
-      z.object({
-        postSlug: z.string(),
-        content: z.string().min(1).max(2000),
-        parentId: z.string().uuid().optional(),
-      }),
-    )
+    .input(CreateCommentInputSchema)
+    .output(selectCommentsSchema)
     .handler(async ({ input, context }) => {
       const { allowed, retryAfter } = commentRatelimit.check(
         context.session?.user.id ?? '',
@@ -69,7 +99,8 @@ export const commentsRouter = base.router({
     }),
 
   deleteComment: protectedProcedure
-    .input(z.object({ commentId: z.string().uuid() }))
+    .input(DeleteCommentInputSchema)
+    .output(EmptyOutputSchema)
     .handler(async ({ input, context }) => {
       const [deleted] = await db
         .delete(comments)
@@ -83,11 +114,13 @@ export const commentsRouter = base.router({
 
       if (!deleted)
         throw new ORPCError('NOT_FOUND', { message: 'Comment not found or not yours' })
-      return { ok: true }
+
+      return
     }),
 
   getReactions: publicProcedure
-    .input(z.object({ targetId: z.string(), targetType: z.enum(['post', 'comment']) }))
+    .input(GetReactionsInputSchema)
+    .output(GetReactionsOutputSchema)
     .handler(async ({ input, context }) => {
       const headers = (context as { headers?: Headers }).headers
       let userId: string | null = null
@@ -122,13 +155,8 @@ export const commentsRouter = base.router({
     }),
 
   addReaction: protectedProcedure
-    .input(
-      z.object({
-        targetId: z.string(),
-        targetType: z.enum(['post', 'comment']),
-        emoji: z.string().min(1).max(8),
-      }),
-    )
+    .input(AddReactionInputSchema)
+    .output(AddReactionOutputSchema)
     .handler(async ({ input, context }) => {
       const { allowed, retryAfter } = reactionRatelimit.check(
         context.session?.user.id ?? '',
@@ -152,7 +180,8 @@ export const commentsRouter = base.router({
     }),
 
   deleteReaction: protectedProcedure
-    .input(z.object({ reactionId: z.string().uuid() }))
+    .input(DeleteReactionInputSchema)
+    .output(EmptyOutputSchema)
     .handler(async ({ input, context }) => {
       const [deleted] = await db
         .delete(reactions)
@@ -166,6 +195,7 @@ export const commentsRouter = base.router({
 
       if (!deleted)
         throw new ORPCError('NOT_FOUND', { message: 'Reaction not found or not yours' })
-      return { ok: true }
+
+      return
     }),
-})
+}

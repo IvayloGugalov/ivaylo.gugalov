@@ -3,7 +3,7 @@ import {
   useGetReactions,
   useAddReaction,
   useDeleteReaction,
-} from '@/hooks/queries/comments'
+} from '@/hooks/queries/comment.query'
 import { Button } from '@/components/ui/button'
 
 const EMOJI_OPTIONS = ['👍', '❤️', '🔥', '🤔', '👀']

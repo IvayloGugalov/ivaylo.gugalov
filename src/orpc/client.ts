@@ -30,3 +30,5 @@ export type Inputs = InferRouterInputs<AppRouter>
 export type Outputs = InferRouterOutputs<AppRouter>
 
 export type GithubStatsGetOutput = Outputs['github']['stats']
+
+export type CommentsListInput = Inputs['comments']['listComments']

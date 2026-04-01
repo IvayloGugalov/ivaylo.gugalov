@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { desc, eq, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
 import { comments, postsMeta, reactions, users } from '@/db/schemas'
-import { adminProcedure, base } from '@/orpc/procedures'
+import { adminProcedure } from '@/orpc/procedures'
 import {
   PostRowSchema,
   PostsInputSchema,
@@ -11,7 +11,7 @@ import {
   TrendsInputSchema,
 } from '@/orpc/schemas/admin.schema'
 
-export const adminRouter = base.router({
+export const adminRouter = {
   stats: adminProcedure.output(StatsOutputSchema).handler(async () => {
     const [usersResult, commentsResult, reactionsResult, postsResult] = await Promise.all(
       [
@@ -108,4 +108,4 @@ export const adminRouter = base.router({
         createdAt: row.createdAt.toISOString(),
       }))
     }),
-})
+}

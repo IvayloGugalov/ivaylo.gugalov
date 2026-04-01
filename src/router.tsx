@@ -11,7 +11,7 @@ export function getRouter() {
     routeTree,
     scrollRestoration: true,
     defaultPreload: 'intent',
-    // defaultPreloadStaleTime: 60_000, // match query staleTime — don't re-run loader on every hover
+    defaultPreloadStaleTime: 0, // disable Router's preload cache, let Query manage freshness
     context,
     Wrap: ({ children }) => <Provider {...context}>{children}</Provider>,
     defaultNotFoundComponent: NotFound,

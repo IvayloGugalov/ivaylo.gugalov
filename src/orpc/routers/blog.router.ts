@@ -1,21 +1,23 @@
-import { z } from 'zod'
+import { eq, sql } from 'drizzle-orm'
 import { db } from '@/db/client'
 import { postsMeta } from '@/db/schemas'
 import { publicProcedure } from '@/orpc/procedures'
-import { compileMdx, listPosts } from '../../lib/mdx'
-import { eq, sql } from 'drizzle-orm'
-import { base } from '../procedures'
+import { compileMdx, listPosts } from '@/lib/mdx'
+import {
+  GetPostInputSchema,
+  GetPostMetaInputSchema,
+  GetPostMetaOutputSchema,
+  GetPostOutputSchema,
+  GetPostsInputSchema,
+  GetPostsOutputSchema,
+  IncrementViewsInputSchema,
+  IncrementViewsOutputSchema,
+} from '../schemas/blog.schema'
 
-export const blogRouter = base.router({
+export const blogRouter = {
   getPosts: publicProcedure
-    .input(
-      z
-        .object({
-          tag: z.string().optional(),
-          category: z.string().optional(),
-        })
-        .optional(),
-    )
+    .input(GetPostsInputSchema)
+    .output(GetPostsOutputSchema)
     .handler(async ({ input }) => {
       let posts = listPosts()
       if (input?.tag) posts = posts.filter((p) => p.tags.includes(input.tag!))
@@ -24,11 +26,13 @@ export const blogRouter = base.router({
     }),
 
   getPost: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(GetPostInputSchema)
+    .output(GetPostOutputSchema)
     .handler(async ({ input }) => compileMdx(input.slug)),
 
   getPostMeta: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(GetPostMetaInputSchema)
+    .output(GetPostMetaOutputSchema)
     .handler(async ({ input }) => {
       const [meta] = await db
         .select()
@@ -38,7 +42,8 @@ export const blogRouter = base.router({
     }),
 
   incrementViews: publicProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(IncrementViewsInputSchema)
+    .output(IncrementViewsOutputSchema)
     .handler(async ({ input }) => {
       await db
         .insert(postsMeta)
@@ -47,6 +52,6 @@ export const blogRouter = base.router({
           target: postsMeta.slug,
           set: { views: sql`${postsMeta.views} + 1` },
         })
-      return { ok: true }
+      return { ok: true as const }
     }),
-})
+}

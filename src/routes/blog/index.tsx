@@ -1,23 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router'
+
+import { useListPosts } from '@/orpc/queries/blog.query'
 import { orpc } from '@/orpc/client'
 import { BlogCard } from '@/components/blog/BlogCard'
 import { TagFilter } from '@/components/blog/TagFilter'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
 
 export const Route = createFileRoute('/blog/')({
-  loader: async ({ context }) => {
-    const posts = await context.queryClient.ensureQueryData(
-      orpc.blog.getPosts.queryOptions(),
-    )
-    return { posts }
+  loader: ({ context }) => {
+    return context.queryClient.ensureQueryData(orpc.blog.getPosts.queryOptions())
   },
   head: () => ({ meta: [{ title: 'Blog | Portfolio' }] }),
   component: BlogIndexPage,
 })
 
 function BlogIndexPage() {
-  const { posts } = Route.useLoaderData()
+  const { data: posts } = useListPosts()
   const [activeTag, setActiveTag] = useState<string | null>(null)
 
   const allTags = [...new Set(posts.flatMap((p) => p.tags))].sort()

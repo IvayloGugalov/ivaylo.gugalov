@@ -36,6 +36,13 @@
       "when": 1773828871080,
       "tag": "0004_volatile_cardiac",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1775041725264,
+      "tag": "0005_abnormal_black_widow",
+      "breakpoints": true
     }
   ]
 }
