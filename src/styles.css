@@ -8,6 +8,8 @@
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
+@custom-variant light (&:is(.light *));
+@custom-variant system (&:is(.system *));
 @plugin "@tailwindcss/typography";
 
 /* ── Design tokens ─────────────────────────────────────────── */
@@ -66,7 +68,7 @@
 }
 
 /* ── Light theme overrides ────────────────────────────── */
-html.light {
+html.light, html[data-theme="light"] {
   --background: #f8fafc;
   --foreground: #0f172a;
   --card: #f1f5f9;
@@ -264,7 +266,7 @@ pre code {
 }
 
 /* ── Prose override (light) ───────────────────────────── */
-html.light .prose {
+html.light .prose, html[data-theme="light"] .prose {
   --tw-prose-body: #475569;
   --tw-prose-headings: #0f172a;
   --tw-prose-links: #0891b2;

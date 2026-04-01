@@ -62,7 +62,7 @@ function SkillBar({ name, level }: { name: string; level: number }) {
 
   return (
     <div ref={ref} className='flex items-center gap-4 py-2'>
-      <span className='text-sm text-text-secondary w-36 flex-shrink-0'>{name}</span>
+      <span className='text-sm text-text-secondary w-36 shrink-0'>{name}</span>
       <div className='flex-1 h-1.5 bg-surface-raised rounded-full overflow-hidden'>
         <div
           style={

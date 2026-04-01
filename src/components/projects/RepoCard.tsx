@@ -6,7 +6,7 @@ import { motion, useMotionValue, useSpring } from 'motion/react'
 import { LanguageDot } from './LanguageDot'
 import { Link } from '@tanstack/react-router'
 
-type GitHubRepo = Endpoints['GET /repos/{owner}/{repo}']['response']['data']
+type GitHubRepo = Endpoints['GET /users/{username}/repos']['response']['data'][number]
 
 interface RepoCardProps {
   repo: GitHubRepo

@@ -12,7 +12,7 @@ const LANGUAGE_COLORS: Record<string, string> = {
 }
 
 interface LanguageDotProps {
-  language: string | null
+  language?: string | null
 }
 
 export function LanguageDot({ language }: LanguageDotProps) {
@@ -21,7 +21,7 @@ export function LanguageDot({ language }: LanguageDotProps) {
   return (
     <span className='inline-flex items-center gap-1.5 text-xs text-text-muted'>
       <span
-        className='w-2.5 h-2.5 rounded-full flex-shrink-0'
+        className='w-2.5 h-2.5 rounded-full shrink-0'
         style={{ backgroundColor: color }}
       />
       {language}

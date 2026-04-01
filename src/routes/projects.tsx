@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { RepoCard } from '@/components/projects/RepoCard'
-import { client } from '@/orpc/client'
+import { orpc } from '@/orpc/client'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
+import { useGithubRepos } from '@/orpc/queries/stats.query'
 
 export const Route = createFileRoute('/projects')({
-  loader: async () => {
-    const repos = await client.github.repos()
-    return { repos }
+  loader: ({ context }) => {
+    context.queryClient.ensureQueryData(orpc.github.repos.queryOptions())
   },
   head: () => ({
     meta: [{ title: 'Projects | Portfolio' }],
@@ -15,7 +15,7 @@ export const Route = createFileRoute('/projects')({
 })
 
 function ProjectsPage() {
-  const { repos } = Route.useLoaderData()
+  const { data: repos } = useGithubRepos()
 
   return (
     <main className='mx-auto max-w-5xl px-4 py-24 md:py-32'>

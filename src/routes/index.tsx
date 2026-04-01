@@ -6,16 +6,19 @@ import Aurora from '@/components/ui/reactbits/Aurora'
 import SplitText from '@/components/ui/reactbits/SplitText'
 import { Counter } from '@/components/Counter'
 import { GITHUB_PROFILE_URL } from '@/constants/site'
+import { orpc } from '@/orpc/client'
 import { useGithubStats } from '@/orpc/queries/stats.query'
 
 export const Route = createFileRoute('/')({
+  loader: ({ context }) => {
+    context.queryClient.ensureQueryData(orpc.github.stats.queryOptions())
+  },
   head: () => ({ meta: [{ title: 'Portfolio' }] }),
   component: HomePage,
 })
 
 function GithubStats() {
-  const { data } = useGithubStats()
-  if (!data) return null
+  const { data: stats } = useGithubStats()
 
   return (
     <a
@@ -26,7 +29,10 @@ function GithubStats() {
     >
       <Star className='size-5 text-yellow-400' fill='currentColor' />
       <div className='flex flex-col leading-tight'>
-        <Counter value={data.stars} className='text-lg font-semibold text-text-primary' />
+        <Counter
+          value={stats.stars}
+          className='text-lg font-semibold text-text-primary'
+        />
         <span className='text-xs text-text-muted'>GitHub stars</span>
       </div>
     </a>

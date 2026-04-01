@@ -2,7 +2,6 @@ import { createFileRoute, redirect, Outlet } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
 import { getRequestHeaders } from '@tanstack/react-start/server'
 import { auth } from '@/lib/auth'
-import { useAuthStore } from '@/store/auth'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { Link } from '@tanstack/react-router'
 
@@ -23,14 +22,8 @@ export const Route = createFileRoute('/admin')({
 })
 
 function AdminLayout() {
-  // Client-side guard (defense against CSR navigation bypassing loader)
-  const user = useAuthStore((s) => s.user)
-  const isAuthLoading = useAuthStore((s) => s.isLoading)
+  const { user } = Route.useLoaderData()
 
-  // While auth is hydrating, render nothing (avoids flash)
-  if (isAuthLoading) return null
-
-  // Once resolved, gate non-admins
   if (user === null || user.role !== 'admin') {
     return (
       <div className='flex min-h-[50vh] flex-col items-center justify-center gap-4'>

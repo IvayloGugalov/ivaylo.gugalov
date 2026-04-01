@@ -1,7 +1,11 @@
-import { useQuery } from '@tanstack/react-query'
+import { useSuspenseQuery } from '@tanstack/react-query'
 
 import { orpc } from '../client'
 
 export function useGithubStats() {
-  return useQuery(orpc.github.stats.queryOptions({ refetchOnWindowFocus: false }))
+  return useSuspenseQuery(orpc.github.stats.queryOptions({ refetchOnWindowFocus: false }))
+}
+
+export function useGithubRepos() {
+  return useSuspenseQuery(orpc.github.repos.queryOptions({ refetchOnWindowFocus: false }))
 }
