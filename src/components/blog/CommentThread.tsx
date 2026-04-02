@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Github, Loader2 } from 'lucide-react'
 
 import { useAuthStore } from '@/store/auth'
 import {
@@ -7,9 +6,8 @@ import {
   useCreateComment,
   useDeleteComment,
 } from '@/hooks/queries/comment.query'
+import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { Button } from '@/components/ui/button'
-import { GoogleIcon } from '@/components/ui/google-icon'
-import { useSocialSignIn } from '@/hooks/use-social-sign-in'
 import CommentItem from './CommentItem'
 
 interface CommentThreadProps {
@@ -18,8 +16,9 @@ interface CommentThreadProps {
 
 export function CommentThread({ postSlug }: CommentThreadProps) {
   const user = useAuthStore((s) => s.user)
-  const { signIn, pendingProvider, isPending } = useSocialSignIn()
-  const [content, setContent] = useState('')
+  const { openDialog } = useSignInDialog()
+  const storageKey = `pending-comment-${postSlug}`
+  const [content, setContent] = useState(() => sessionStorage.getItem(storageKey) ?? '')
   const [replyTo, setReplyTo] = useState<string | null>(null)
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useListComments(
@@ -32,6 +31,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
   const comments = data?.pages.flatMap((p) => p.items) ?? []
   const createComment = useCreateComment(postSlug, () => {
     setContent('')
+    sessionStorage.removeItem(storageKey)
     setReplyTo(null)
   })
   const deleteComment = useDeleteComment(postSlug)
@@ -42,66 +42,47 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
         Comments ({comments.length})
       </h2>
 
-      {user ? (
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            if (!content.trim()) return
-            createComment.mutate({
-              postSlug,
-              content: content.trim(),
-              parentId: replyTo ?? undefined,
-            })
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          if (!content.trim()) return
+          if (!user) {
+            openDialog()
+            return
+          }
+          createComment.mutate({
+            postSlug,
+            content: content.trim(),
+            parentId: replyTo ?? undefined,
+          })
+        }}
+        className='mb-8 space-y-3'
+      >
+        <textarea
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value)
+            if (e.target.value) {
+              sessionStorage.setItem(storageKey, e.target.value)
+            } else {
+              sessionStorage.removeItem(storageKey)
+            }
           }}
-          className='mb-8 space-y-3'
-        >
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder={replyTo ? 'Write a reply...' : 'Write a comment...'}
-            rows={3}
-            className='w-full rounded-lg border border--(--) bg-accent p-3 text-sm text--(--) placeholder:text--(--) focus:outline-none focus:border--(--) resize-none'
-          />
-          <div className='flex gap-2'>
-            <Button type='submit' disabled={createComment.isPending || !content.trim()}>
-              {createComment.isPending ? 'Posting...' : replyTo ? 'Reply' : 'Comment'}
+          placeholder={replyTo ? 'Write a reply...' : 'Write a comment...'}
+          rows={3}
+          className='w-full rounded-lg border border--(--) bg-accent p-3 text-sm text--(--) placeholder:text--(--) focus:outline-none focus:border--(--) resize-none'
+        />
+        <div className='flex gap-2'>
+          <Button type='submit' disabled={createComment.isPending || !content.trim()}>
+            {createComment.isPending ? 'Posting...' : replyTo ? 'Reply' : 'Comment'}
+          </Button>
+          {replyTo && (
+            <Button variant='ghost' type='button' onClick={() => setReplyTo(null)}>
+              Cancel
             </Button>
-            {replyTo && (
-              <Button variant='ghost' type='button' onClick={() => setReplyTo(null)}>
-                Cancel
-              </Button>
-            )}
-          </div>
-        </form>
-      ) : (
-        <div className='my-6 flex flex-col gap-1 max-w-2xs'>
-          <Button
-            onClick={() => signIn('github')}
-            disabled={isPending}
-            className='inline-flex items-center gap-2  px-4 py-2 rounded-lg'
-          >
-            {pendingProvider === 'github' ? (
-              <Loader2 className='size-4 animate-spin' />
-            ) : (
-              <Github className='size-4' />
-            )}
-            Continue with GitHub
-          </Button>
-
-          <Button
-            onClick={() => signIn('google')}
-            disabled={isPending}
-            className='inline-flex items-center gap-2  px-4 py-2 rounded-lg bg-red-600 hover:bg-red-500'
-          >
-            {pendingProvider === 'google' ? (
-              <Loader2 className='size-4 animate-spin' />
-            ) : (
-              <GoogleIcon className='size-4' />
-            )}
-            Continue with Google
-          </Button>
+          )}
         </div>
-      )}
+      </form>
 
       <div className='space-y-6'>
         {comments.map((comment) => (

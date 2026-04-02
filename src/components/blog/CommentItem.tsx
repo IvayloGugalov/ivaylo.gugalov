@@ -22,16 +22,14 @@ export default function CommentItem({
       <Avatar src={comment.user.image} alt={comment.userId ?? 'User'} size={32} />
       <div className='flex-1'>
         <div className='flex items-center gap-2 mb-1'>
-          <span className='text-sm font-medium text--(--)'>
-            {comment.userId ?? '[deleted]'}
-          </span>
+          <span className='text-sm font-medium text--(--)'>{comment.user.name}</span>
           <span className='text-xs text--(--)'>
-            {new Date(comment.createdAt).toLocaleDateString()}
+            {new Date(comment.createdAt).toLocaleString()}
           </span>
         </div>
         <p className='text-sm text--(--)'>{comment.content}</p>
         <div className='flex gap-3 mt-2'>
-          {onReply && (
+          {currentUserId && onReply && (
             <Button
               type='button'
               onClick={onReply}

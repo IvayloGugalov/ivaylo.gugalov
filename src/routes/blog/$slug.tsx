@@ -1,44 +1,57 @@
+import { useEffect, useState } from 'react'
 import { createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
-import { useEffect, useState } from 'react'
+import { Loader2 } from 'lucide-react'
+import type { MDXModule } from 'mdx/types'
+
 import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog.query'
 import { CommentThread } from '@/components/blog/CommentThread'
 import { ReactionBar } from '@/components/blog/ReactionBar'
-import type { MDXModule } from 'mdx/types'
 import { orpc, client } from '@/orpc/client'
 
+function Loader() {
+  return (
+    <div className='flex justify-center items-center min-h-[25vh]'>
+      <Loader2 className='size-8 animate-spin text-muted-foreground' />
+    </div>
+  )
+}
+
 export const Route = createFileRoute('/blog/$slug')({
-  loader: async ({ params, context }) => {
+  loader: ({ params, context }) => {
     const { slug } = params
 
-    const post = await context.queryClient.ensureQueryData(
+    const post = context.queryClient.ensureQueryData(
       orpc.blog.getPost.queryOptions({ input: { slug } }),
     )
 
     if (!post) throw notFound()
 
-    context.queryClient.ensureQueryData(
+    const postMeta = context.queryClient.ensureQueryData(
       orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
     )
 
-    context.queryClient.ensureQueryData(
+    const reactions = context.queryClient.ensureQueryData(
       orpc.comments.getReactions.queryOptions({
         input: { targetId: slug, targetType: 'post' },
       }),
     )
 
-    context.queryClient.prefetchInfiniteQuery(
+    const comments = context.queryClient.ensureInfiniteQueryData(
       orpc.comments.listComments.infiniteOptions({
         input: () => ({ postSlug: slug }),
         initialPageParam: undefined,
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
       }),
     )
+
+    return { post, postMeta, reactions, comments }
   },
   head: ({ loaderData: _ }) => ({
     meta: [{ title: 'Blog Post | Portfolio' }],
   }),
+  pendingComponent: () => <Loader />,
   notFoundComponent: () => <ErrorComponent error={new Error('Post not found')} />,
   component: BlogPostPage,
 })
@@ -79,11 +92,7 @@ function BlogPostPage() {
       <ReactionBar targetId={slug} targetType='post' />
 
       <article className='prose prose-neutral dark:prose-invert max-w-none mt-10'>
-        {MDXContent ? (
-          <MDXContent />
-        ) : (
-          <p className='text-(--sea-ink-soft)'>Loading...</p>
-        )}
+        {MDXContent ? <MDXContent /> : <Loader />}
       </article>
 
       <CommentThread postSlug={slug} />

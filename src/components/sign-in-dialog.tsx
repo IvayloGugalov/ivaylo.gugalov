@@ -45,7 +45,7 @@ export function SignInDialog() {
           <Button
             onClick={() => signIn('github')}
             disabled={isPending}
-            className='relative'
+            className='relative border-accent bg-background text-foreground hover:bg-primary/60'
           >
             {pendingProvider === 'github' ? (
               <Loader2 className='size-4 animate-spin' />
@@ -59,7 +59,7 @@ export function SignInDialog() {
           <Button
             onClick={() => signIn('google')}
             disabled={isPending}
-            className='relative bg-red-600 hover:bg-red-500'
+            className='relative border-accent bg-background text-foreground hover:text-primary-foreground hover:bg-primary/60'
           >
             {pendingProvider === 'google' ? (
               <Loader2 className='size-4 animate-spin' />
