@@ -22,6 +22,7 @@ import { auth } from '@/lib/auth'
 import { useAuthStore } from '@/store/auth'
 import type { User } from '@/lib/auth'
 import appCss from '../styles.css?url'
+import geistSans400Url from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url'
 
 const getSession = createServerFn({ method: 'GET' }).handler(async () => {
   const headers = getRequestHeaders()
@@ -35,7 +36,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { title: 'Portfolio' },
     ],
-    links: [{ rel: 'stylesheet', href: appCss }],
+    links: [
+      { rel: 'stylesheet', href: appCss },
+      {
+        rel: 'preload',
+        as: 'font',
+        type: 'font/woff2',
+        href: geistSans400Url,
+        crossOrigin: 'anonymous',
+      },
+    ],
   }),
   loader: async () => {
     try {
@@ -84,7 +94,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <HeadContent />
       </head>
-      <body className='font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]'>
+      <body
+        suppressHydrationWarning
+        className='font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]'
+      >
         <ThemeProvider>
           <Providers>{children}</Providers>
         </ThemeProvider>

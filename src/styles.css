@@ -3,6 +3,12 @@
 @import '@fontsource/geist-sans/600.css';
 @import '@fontsource/geist-sans/700.css';
 
+/* Ensure font-display: swap for all Geist Sans weights to avoid invisible text during load (FOIT) */
+@font-face { font-family: 'Geist Sans'; font-style: normal; font-weight: 400; font-display: swap; src: url('@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Geist Sans'; font-style: normal; font-weight: 500; font-display: swap; src: url('@fontsource/geist-sans/files/geist-sans-latin-500-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Geist Sans'; font-style: normal; font-weight: 600; font-display: swap; src: url('@fontsource/geist-sans/files/geist-sans-latin-600-normal.woff2') format('woff2'); }
+@font-face { font-family: 'Geist Sans'; font-style: normal; font-weight: 700; font-display: swap; src: url('@fontsource/geist-sans/files/geist-sans-latin-700-normal.woff2') format('woff2'); }
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";

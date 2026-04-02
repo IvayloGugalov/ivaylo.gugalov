@@ -5,7 +5,8 @@ import { Github, Linkedin, Mail, ChevronDown, Star } from 'lucide-react'
 import Aurora from '@/components/ui/reactbits/Aurora'
 import SplitText from '@/components/ui/reactbits/SplitText'
 import { Counter } from '@/components/Counter'
-import { GITHUB_PROFILE_URL } from '@/constants/site'
+import { GITHUB_PROFILE_URL, SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 import { orpc } from '@/orpc/client'
 import { useGithubStats } from '@/orpc/queries/stats.query'
 
@@ -13,7 +14,16 @@ export const Route = createFileRoute('/')({
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(orpc.github.stats.queryOptions())
   },
-  head: () => ({ meta: [{ title: 'Portfolio' }] }),
+  staleTime: 60 * 60_000,
+  headers: () => ({
+    'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+  }),
+  head: () =>
+    buildMeta({
+      title: `${SITE_NAME} — Software Engineer`,
+      description: SITE_DESCRIPTION,
+      url: SITE_URL,
+    }),
   component: HomePage,
 })
 

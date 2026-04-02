@@ -32,7 +32,7 @@ export const makeQueryClient = () => {
       onError: (error, query) => {
         toast.error(`[QueryCache] error: ${error.message}`)
 
-        posthog.captureException(error, {
+        posthog?.captureException(error, {
           type: 'query',
           queryKey: query.queryKey,
         })
@@ -45,7 +45,7 @@ export const makeQueryClient = () => {
       onError: (error, _variables, _context, mutation) => {
         toast.error(`[MutationCache] error: ${error.message}`)
 
-        posthog.captureException(error, {
+        posthog?.captureException(error, {
           type: 'mutation',
           mutationKey: mutation.options.mutationKey,
         })

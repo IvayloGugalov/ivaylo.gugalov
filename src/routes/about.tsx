@@ -1,10 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 import { useEffect, useRef, useState } from 'react'
 import ScrollReveal from '@/components/ui/reactbits/ScrollReveal'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
 
 export const Route = createFileRoute('/about')({
-  head: () => ({ meta: [{ title: 'About | Portfolio' }] }),
+  head: () =>
+    buildMeta({
+      title: `About | ${SITE_NAME}`,
+      description: `Learn about ${SITE_NAME} — a full-stack engineer specializing in TypeScript, React, and .NET.`,
+      url: `${SITE_URL}/about`,
+    }),
   component: About,
 })
 

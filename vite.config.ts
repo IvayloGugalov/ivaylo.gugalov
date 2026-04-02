@@ -12,7 +12,13 @@ const config = defineConfig({
     devtools(),
     tsconfigPaths({ projects: ['./tsconfig.json'] }),
     tailwindcss(),
-    tanstackStart(),
+    tanstackStart({
+      prerender: {
+        enabled: true,
+        crawlLinks: true,
+        filter: ({ path }) => !path.startsWith('/admin') && !path.startsWith('/api'),
+      },
+    }),
     viteReact({
       babel: {
         plugins: ['babel-plugin-react-compiler']

@@ -1,9 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
 
 export const Route = createFileRoute('/contact')({
-  head: () => ({ meta: [{ title: 'Contact | Portfolio' }] }),
+  head: () =>
+    buildMeta({
+      title: `Contact | ${SITE_NAME}`,
+      description: `Get in touch with ${SITE_NAME} via email, GitHub, or LinkedIn.`,
+      url: `${SITE_URL}/contact`,
+    }),
   component: ContactPage,
 })
 

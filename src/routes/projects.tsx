@@ -1,4 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 import { RepoCard } from '@/components/projects/RepoCard'
 import { orpc } from '@/orpc/client'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
@@ -8,9 +10,16 @@ export const Route = createFileRoute('/projects')({
   loader: ({ context }) => {
     context.queryClient.ensureQueryData(orpc.github.repos.queryOptions())
   },
-  head: () => ({
-    meta: [{ title: 'Projects | Portfolio' }],
+  staleTime: 60 * 60_000,
+  headers: () => ({
+    'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
   }),
+  head: () =>
+    buildMeta({
+      title: `Projects | ${SITE_NAME}`,
+      description: `Open-source work and side projects by ${SITE_NAME}.`,
+      url: `${SITE_URL}/projects`,
+    }),
   component: ProjectsPage,
 })
 

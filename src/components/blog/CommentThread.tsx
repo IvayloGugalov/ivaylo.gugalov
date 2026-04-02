@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useAuthStore } from '@/store/auth'
 import {
@@ -18,8 +18,13 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
   const user = useAuthStore((s) => s.user)
   const { openDialog } = useSignInDialog()
   const storageKey = `pending-comment-${postSlug}`
-  const [content, setContent] = useState(() => sessionStorage.getItem(storageKey) ?? '')
+  const [content, setContent] = useState('')
   const [replyTo, setReplyTo] = useState<string | null>(null)
+
+  useEffect(() => {
+    const stored = sessionStorage.getItem(storageKey)
+    if (stored) setContent(stored)
+  }, [storageKey])
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useListComments(
     (pageParam) => ({

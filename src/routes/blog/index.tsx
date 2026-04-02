@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 
 import { useListPosts } from '@/orpc/queries/blog.query'
 import { orpc } from '@/orpc/client'
@@ -11,7 +13,16 @@ export const Route = createFileRoute('/blog/')({
   loader: ({ context }) => {
     return context.queryClient.ensureQueryData(orpc.blog.getPosts.queryOptions())
   },
-  head: () => ({ meta: [{ title: 'Blog | Portfolio' }] }),
+  staleTime: 5 * 60_000,
+  headers: () => ({
+    'Cache-Control': 'public, max-age=300, stale-while-revalidate=86400',
+  }),
+  head: () =>
+    buildMeta({
+      title: `Blog | ${SITE_NAME}`,
+      description: 'Thoughts on code, design, and building things on the web.',
+      url: `${SITE_URL}/blog`,
+    }),
   component: BlogIndexPage,
 })
 

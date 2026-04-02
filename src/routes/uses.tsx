@@ -1,7 +1,14 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { SITE_URL, SITE_NAME } from '@/constants/site'
+import { buildMeta } from '@/lib/seo'
 
 export const Route = createFileRoute('/uses')({
-  head: () => ({ meta: [{ title: 'Uses | Portfolio' }] }),
+  head: () =>
+    buildMeta({
+      title: `Uses | ${SITE_NAME}`,
+      description: `The tools, hardware, and software ${SITE_NAME} uses daily.`,
+      url: `${SITE_URL}/uses`,
+    }),
   component: UsesPage,
 })
 
