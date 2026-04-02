@@ -20,6 +20,7 @@ export const blogRouter = {
     .output(GetPostsOutputSchema)
     .handler(async ({ input }) => {
       let posts = listPosts()
+
       if (input?.tag) posts = posts.filter((p) => p.tags.includes(input.tag!))
       if (input?.category) posts = posts.filter((p) => p.category === input.category)
       return posts
@@ -47,7 +48,7 @@ export const blogRouter = {
     .handler(async ({ input }) => {
       await db
         .insert(postsMeta)
-        .values({ slug: input.slug, views: 1 })
+        .values({ slug: input.slug, views: 1, title: input.title })
         .onConflictDoUpdate({
           target: postsMeta.slug,
           set: { views: sql`${postsMeta.views} + 1` },

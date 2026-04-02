@@ -1,0 +1,120 @@
+---
+title: "Incremental Static Regeneration with TanStack Start"
+date: "2026-04-02"
+tags: ["tanstack", "react", "isr", "caching"]
+category: "React"
+description: "How to use ISR in TanStack Start with standard HTTP cache headers for CDN-friendly static regeneration."
+---
+
+## Incremental Static Regeneration with TanStack Start
+
+If you've ever wanted the blazing speed of a static site *and* the freshness of dynamic content — ISR (Incremental Static Regeneration) is your answer. TanStack Start makes this surprisingly straightforward using standard HTTP cache headers.
+
+### What is ISR?
+
+ISR lets you pre-render pages at build time, serve them from a CDN, and automatically regenerate them in the background when they go stale. No full rebuilds. No waiting. Just fast pages that stay up to date.
+
+### How It Works in TanStack Start
+
+Unlike framework-specific ISR implementations, TanStack Start uses standard `Cache-Control` headers — meaning it works with **any CDN** (Cloudflare, Vercel, Netlify, etc.).
+
+The flow is simple:
+
+1. Pages are generated at **build time**
+2. A CDN caches the HTML based on your cache headers
+3. After the cache expires, the **next request triggers regeneration**
+4. Meanwhile, **stale content is served** while fresh content is fetched in the background (`stale-while-revalidate`)
+
+### Basic Setup
+
+First, configure prerendering in `vite.config.ts`:
+
+```tsx
+// vite.config.ts
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    tanstackStart({
+      prerender: {
+        routes: ['/blog', '/blog/posts/*'],
+        crawlLinks: true,
+      },
+    }),
+  ],
+})
+```
+
+Then add cache headers to your route:
+
+```tsx
+// routes/blog/posts/$postId.tsx
+export const Route = createFileRoute('/blog/posts/$postId')({
+  loader: async ({ params }) => {
+    const post = await fetchPost(params.postId)
+    return { post }
+  },
+  headers: () => ({
+    // Cache at CDN for 1 hour, serve stale for up to 24 hours
+    'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
+  }),
+})
+```
+
+That's it. Your blog posts are now ISR-enabled.
+
+### Common Patterns
+
+| Use Case | Cache Strategy |
+|---|---|
+| Blog posts | `max-age=3600, stale-while-revalidate=604800` |
+| Product pages | `max-age=300, stale-while-revalidate=3600` |
+| Landing pages | `max-age=86400, stale-while-revalidate=604800` |
+| User dashboards | `private, max-age=60` (no CDN caching) |
+
+### Multi-Tier Caching
+
+You can combine CDN caching with TanStack Router's built-in client-side cache:
+
+```tsx
+export const Route = createFileRoute('/posts/$postId')({
+  loader: async ({ params }) => fetchPost(params.postId),
+  headers: () => ({
+    'Cache-Control': 'public, max-age=3600, stale-while-revalidate=86400',
+  }),
+  staleTime: 60_000,    // Fresh for 60s on the client
+  gcTime: 5 * 60_000,  // Keep in memory for 5 minutes
+})
+```
+
+This gives you a two-layer cache: **CDN edge** for global speed, and **client memory** for instant navigation.
+
+### On-Demand Revalidation
+
+Need to bust the cache immediately when content changes? Create a revalidation API route that calls your CDN's purge API (e.g., Cloudflare):
+
+```tsx
+// routes/api/revalidate.ts
+POST: async ({ request }) => {
+  const { path, secret } = await request.json()
+  if (secret !== process.env.REVALIDATE_SECRET) {
+    return Response.json({ error: 'Invalid token' }, { status: 401 })
+  }
+  // Call CDN purge API here...
+  return Response.json({ revalidated: true })
+}
+```
+
+### Tips
+
+- **Start conservative** — begin with `max-age=300` and increase once you understand your update patterns
+- **Use ETags** for efficient CDN revalidation
+- **Monitor cache hit rates** — a high hit rate means your CDN is doing its job
+- **Combine with static prerendering** for instant first loads
+
+### Wrapping Up
+
+TanStack Start's ISR approach is refreshingly simple: it's just HTTP cache headers. No magic, no vendor lock-in. You get full control over caching behavior at both the page and data level, and it works out of the box with any modern CDN.
+
+Check out the [official docs](https://tanstack.com/start/latest/docs/framework/react/guide/isr) for the full reference.

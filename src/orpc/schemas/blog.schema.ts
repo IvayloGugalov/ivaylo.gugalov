@@ -22,5 +22,8 @@ export const GetPostMetaOutputSchema = z.object({
   views: z.number().int().nonnegative(),
 })
 
-export const IncrementViewsInputSchema = z.object({ slug: z.string() })
+export const IncrementViewsInputSchema = z.object({
+  slug: z.string().min(1),
+  title: z.string().min(1),
+})
 export const IncrementViewsOutputSchema = z.object({ ok: z.literal(true) })
