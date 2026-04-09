@@ -75,7 +75,7 @@ function ContactPage() {
                 </div>
                 <ExternalLink
                   size={14}
-                  className='text-text-muted group-hover:text-accent-primary group-hover:translate-x-1 transition-all duration-200'
+                  className='text-text-muted group-hover:text-accent-primary group-hover:translate-x-1 transition-[color,transform] duration-150'
                 />
               </a>
             </li>

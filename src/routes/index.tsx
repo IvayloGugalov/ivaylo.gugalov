@@ -36,7 +36,7 @@ function GithubStats() {
       href={GITHUB_PROFILE_URL}
       target='_blank'
       rel='noopener noreferrer'
-      className='inline-flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-accent-glow transition-all duration-200 cursor-pointer'
+      className='inline-flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-accent-glow transition-[border-color] duration-200 cursor-pointer'
     >
       <Star className='size-5 text-yellow-400' fill='currentColor' />
       <div className='flex flex-col leading-tight'>
@@ -52,7 +52,7 @@ function GithubStats() {
 
 function HomePage() {
   return (
-    <main className='relative min-h-screen flex flex-col items-center justify-center'>
+    <main className='relative min-h-dvh flex flex-col items-center justify-center'>
       {/* Aurora background */}
       <div className='absolute inset-0 -z-10 opacity-40'>
         <Aurora
@@ -90,8 +90,8 @@ function HomePage() {
           className='text-6xl md:text-8xl font-bold tracking-tighter text-text-primary leading-[1.05] mb-0'
           splitType='chars'
           delay={20}
-          duration={0.8}
-          from={{ opacity: 0, y: 50 }}
+          duration={0.6}
+          from={{ opacity: 0, y: 24 }}
           to={{ opacity: 1, y: 0 }}
           threshold={0.01}
           rootMargin='0px'
@@ -100,9 +100,9 @@ function HomePage() {
 
         {/* Heading line 2 — gradient span */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.6, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className='text-6xl md:text-8xl font-bold tracking-tighter leading-[1.05] mb-8'
         >
           <span className='gradient-text'>{m.home_hero_line2()}</span>
@@ -128,7 +128,7 @@ function HomePage() {
         >
           <Link
             to='/blog'
-            className='inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent-primary text-background font-semibold text-sm hover:bg-foreground hover:text-background transition-all duration-200 cursor-pointer no-underline'
+            className='inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent-primary text-background font-semibold text-sm hover:bg-foreground hover:text-background transition-[background-color,color] duration-150 active:scale-[0.97] cursor-pointer no-underline'
             style={{ ['--hover-shadow' as string]: '0 0 24px #22d3ee66' }}
             onMouseEnter={(e) => {
               e.currentTarget.style.boxShadow = '0 0 24px #22d3ee66'
@@ -183,9 +183,14 @@ function HomePage() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5, delay: 1.2 }}
-        className='absolute bottom-8 left-1/2 -translate-x-1/2 text-text-muted animate-bounce'
+        className='absolute bottom-8 left-1/2 -translate-x-1/2 text-text-muted'
       >
-        <ChevronDown size={22} />
+        <motion.div
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut', delay: 1.7 }}
+        >
+          <ChevronDown size={22} />
+        </motion.div>
       </motion.div>
     </main>
   )

@@ -4,6 +4,7 @@ import {
   useAddReaction,
   useDeleteReaction,
 } from '@/hooks/queries/comment.query'
+import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { Button } from '@/components/ui/button'
 
 const EMOJI_OPTIONS = ['👍', '❤️', '🔥', '🤔', '👀']
@@ -15,6 +16,7 @@ interface ReactionBarProps {
 
 export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
   const user = useAuthStore((s) => s.user)
+  const { openDialog } = useSignInDialog()
   const { data: reactions = [] } = useGetReactions(targetId, targetType)
   const addReaction = useAddReaction(targetId, targetType)
   const deleteReaction = useDeleteReaction(targetId, targetType)
@@ -23,6 +25,10 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
   const isPending = addReaction.isPending || deleteReaction.isPending
 
   function handleClick(emoji: string) {
+    if (!user) {
+      openDialog()
+      return
+    }
     const existing = reactionMap.get(emoji)
     if (existing?.reactionId) {
       deleteReaction.mutate({ reactionId: existing.reactionId })
@@ -42,7 +48,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
           <Button
             key={emoji}
             type='button'
-            disabled={!user || isPending}
+            disabled={isPending}
             title={user ? `React with ${emoji}` : 'Sign in to react'}
             onClick={() => handleClick(emoji)}
             className={[

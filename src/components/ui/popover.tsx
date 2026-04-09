@@ -1,4 +1,5 @@
 import type * as React from 'react'
+import { useRef, useCallback } from 'react'
 import { Popover as PopoverPrimitive } from 'radix-ui'
 
 import { cn } from '@/lib/utils'
@@ -15,22 +16,42 @@ function PopoverTrigger({
 
 function PopoverContent({
   className,
+  children,
   align = 'center',
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
+  const ref = useRef<HTMLDivElement>(null)
+  const spotRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current || !spotRef.current) return
+    const { left, top } = ref.current.getBoundingClientRect()
+    spotRef.current.style.background = `radial-gradient(circle at ${e.clientX - left}px ${e.clientY - top}px, rgba(255,255,255,0.06) 0%, transparent 65%)`
+  }, [])
+
+  const handleMouseLeave = useCallback(() => {
+    if (spotRef.current) spotRef.current.style.background = ''
+  }, [])
+
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
+        ref={ref}
         data-slot='popover-content'
         align={align}
         sideOffset={sideOffset}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
         className={cn(
-          'z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-4 rounded-md bg-popover p-4 text-sm text-popover-foreground shadow-md ring-1 ring-foreground/10 outline-hidden duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
+          'relative z-50 flex w-72 origin-(--radix-popover-content-transform-origin) flex-col gap-4 overflow-hidden rounded-md bg-popover p-4 text-sm text-popover-foreground shadow-lg ring-1 ring-foreground/10 outline-hidden duration-200 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
           className,
         )}
         {...props}
-      />
+      >
+        <div ref={spotRef} className='pointer-events-none absolute inset-0' aria-hidden='true' />
+        {children}
+      </PopoverPrimitive.Content>
     </PopoverPrimitive.Portal>
   )
 }
