@@ -4,6 +4,7 @@ import { buildMeta } from '@/lib/seo'
 import { useEffect, useRef, useState } from 'react'
 import ScrollReveal from '@/components/ui/reactbits/ScrollReveal'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
+import * as m from '../paraglide/messages'
 
 export const Route = createFileRoute('/about')({
   head: () =>
@@ -92,10 +93,10 @@ function About() {
     <main className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
         <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          About
+          {m.about_kicker()}
         </p>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-8'>
-          I build full-stack products.
+          {m.about_heading()}
         </h1>
       </FadeContent>
 
@@ -107,8 +108,7 @@ function About() {
           blurStrength={3}
           baseRotation={1}
         >
-          I'm a full-stack engineer focused on TypeScript, React, and .NET — building
-          products that feel fast and look intentional.
+          {m.about_bio_1()}
         </ScrollReveal>
 
         <ScrollReveal
@@ -118,9 +118,7 @@ function About() {
           blurStrength={3}
           baseRotation={1}
         >
-          I've spent the past few years working across the full stack — from polished
-          frontend interfaces to well-structured APIs and reliable data layers. Developer
-          experience matters as much as user experience.
+          {m.about_bio_2()}
         </ScrollReveal>
 
         <ScrollReveal
@@ -130,15 +128,14 @@ function About() {
           blurStrength={3}
           baseRotation={1}
         >
-          Outside of work I write about what I'm learning, contribute to open source, and
-          occasionally build tools just for the joy of it.
+          {m.about_bio_3()}
         </ScrollReveal>
       </div>
 
       <FadeContent blur delay={100} duration={600}>
         <div className='mb-12'>
           <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-6'>
-            Skills
+            {m.about_skills_heading()}
           </p>
           <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6'>
             {SKILLS.map((group) => (
@@ -156,7 +153,7 @@ function About() {
       </FadeContent>
 
       <hr className='border-border mb-6' />
-      <p className='text-sm text-text-muted'>Currently open to new opportunities.</p>
+      <p className='text-sm text-text-muted'>{m.about_open_to_work()}</p>
     </main>
   )
 }

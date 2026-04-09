@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import * as m from '../../paraglide/messages'
 
 interface TagFilterProps {
   tags: string[]
@@ -18,7 +19,7 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
             : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
         }`}
       >
-        All
+        {m.blog_filter_all()}
       </Button>
       {tags.map((tag) => (
         <Button

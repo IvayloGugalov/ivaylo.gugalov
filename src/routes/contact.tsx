@@ -3,6 +3,7 @@ import { SITE_URL, SITE_NAME } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
+import * as m from '../paraglide/messages'
 
 export const Route = createFileRoute('/contact')({
   head: () =>
@@ -40,13 +41,13 @@ function ContactPage() {
     <main className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
         <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          Contact
+          {m.contact_kicker()}
         </p>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
-          Let's connect.
+          {m.contact_heading()}
         </h1>
         <p className='text-text-secondary mb-12'>
-          I'm best reached via email or LinkedIn.
+          {m.contact_description()}
         </p>
       </FadeContent>
 

@@ -11,6 +11,7 @@ import { ReactionBar } from '@/components/blog/ReactionBar'
 import { orpc, client } from '@/orpc/client'
 import { SITE_URL, SITE_NAME, OG_IMAGE } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
+import * as m from '../../paraglide/messages'
 
 function Loader() {
   return (
@@ -114,7 +115,7 @@ function BlogPostPage() {
     <main className='mx-auto max-w-3xl px-4 py-16'>
       <header className='mb-10'>
         <p className='text-sm text-(--sea-ink-soft) mb-2'>
-          {new Date(post.frontmatter.date).toLocaleString()} · {meta.views} views
+          {new Date(post.frontmatter.date).toLocaleString()} · {m.blog_views({ count: meta.views })}
         </p>
         <h1 className='font-[Fraunces] text-4xl font-bold text-(--sea-ink) mb-3'>
           {post.frontmatter.title}

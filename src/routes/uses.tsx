@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { SITE_URL, SITE_NAME } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
+import * as m from '../paraglide/messages'
 
 export const Route = createFileRoute('/uses')({
   head: () =>
@@ -15,20 +16,20 @@ export const Route = createFileRoute('/uses')({
 function UsesPage() {
   return (
     <main className='mx-auto max-w-3xl px-4 py-16'>
-      <h1 className='font-[Fraunces] text-4xl font-bold text--(--) mb-4'>Uses</h1>
-      <p className='text--(--) mb-10'>The tools, hardware, and software I use daily.</p>
+      <h1 className='font-[Fraunces] text-4xl font-bold text--(--) mb-4'>{m.uses_heading()}</h1>
+      <p className='text--(--) mb-10'>{m.uses_description()}</p>
       <div className='space-y-10'>
-        <Section title='Editor'>
+        <Section title={m.uses_section_editor()}>
           <Item label='VS Code' description='Primary editor with a custom dark theme.' />
           <Item
             label='Claude Code'
             description='AI pair programmer for complex refactors.'
           />
         </Section>
-        <Section title='Hardware'>
+        <Section title={m.uses_section_hardware()}>
           <Item label='PC' description='Custom-built Windows 11 workstation.' />
         </Section>
-        <Section title='Terminal'>
+        <Section title={m.uses_section_terminal()}>
           <Item label='Windows Terminal + Git Bash' description='Gets the job done.' />
         </Section>
       </div>

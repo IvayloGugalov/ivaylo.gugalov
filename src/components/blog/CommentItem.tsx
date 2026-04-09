@@ -1,6 +1,7 @@
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import type { CommentWithUser } from '@/db/schemas'
+import * as m from '../../paraglide/messages'
 
 interface CommentItemProps {
   comment: CommentWithUser
@@ -35,7 +36,7 @@ export default function CommentItem({
               onClick={onReply}
               className='text-xs text--(--) hover:text--(--) transition-colors'
             >
-              Reply
+              {m.blog_comment_reply()}
             </Button>
           )}
           {isOwn && (
@@ -44,7 +45,7 @@ export default function CommentItem({
               onClick={onDelete}
               className='text-xs text--(--) hover:text-destructive transition-colors'
             >
-              Delete
+              {m.blog_comment_delete()}
             </Button>
           )}
         </div>

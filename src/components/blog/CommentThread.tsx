@@ -9,6 +9,7 @@ import {
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { Button } from '@/components/ui/button'
 import CommentItem from './CommentItem'
+import * as m from '../../paraglide/messages'
 
 interface CommentThreadProps {
   postSlug: string
@@ -44,7 +45,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
   return (
     <section className='mt-16'>
       <h2 className='font-[Fraunces] text-2xl font-bold text--(--) mb-6'>
-        Comments ({comments.length})
+        {m.blog_comments_heading({ count: comments.length })}
       </h2>
 
       <form
@@ -73,17 +74,17 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
               sessionStorage.removeItem(storageKey)
             }
           }}
-          placeholder={replyTo ? 'Write a reply...' : 'Write a comment...'}
+          placeholder={replyTo ? m.blog_comment_placeholder_reply() : m.blog_comment_placeholder_new()}
           rows={3}
           className='w-full rounded-lg border border--(--) bg-accent p-3 text-sm text--(--) placeholder:text--(--) focus:outline-none focus:border--(--) resize-none'
         />
         <div className='flex gap-2'>
           <Button type='submit' disabled={createComment.isPending || !content.trim()}>
-            {createComment.isPending ? 'Posting...' : replyTo ? 'Reply' : 'Comment'}
+            {createComment.isPending ? m.blog_comment_submit_pending() : replyTo ? m.blog_comment_reply() : m.blog_comment_submit()}
           </Button>
           {replyTo && (
             <Button variant='ghost' type='button' onClick={() => setReplyTo(null)}>
-              Cancel
+              {m.blog_comment_cancel()}
             </Button>
           )}
         </div>
@@ -119,7 +120,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
           disabled={isFetchingNextPage}
           onClick={() => void fetchNextPage()}
         >
-          {isFetchingNextPage ? 'Loading...' : 'Load more comments'}
+          {isFetchingNextPage ? m.blog_comment_loading() : m.blog_comment_load_more()}
         </Button>
       )}
     </section>

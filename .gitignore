@@ -12,3 +12,6 @@ dist-ssr
 .vinxi
 __unconfig*
 todos.json
+
+# Paraglide generated files
+src/paraglide/

@@ -4,6 +4,7 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useLocation,
 } from '@tanstack/react-router'
 import { ThemeProvider } from '@/store/theme'
 import type { QueryClient } from '@tanstack/react-query'
@@ -23,6 +24,8 @@ import { useAuthStore } from '@/store/auth'
 import type { User } from '@/lib/auth'
 import appCss from '../styles.css?url'
 import geistSans400Url from '@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url'
+import { getLocale } from '../paraglide/runtime'
+import { SITE_URL } from '@/constants/site'
 
 const getSession = createServerFn({ method: 'GET' }).handler(async () => {
   const headers = getRequestHeaders()
@@ -59,6 +62,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   component: RootComponent,
 })
 
+function HreflangLinks() {
+  const location = useLocation()
+  // location.pathname is already the canonical path (input rewrite strips locale prefix)
+  const canonicalPath = location.pathname
+  const enHref = `${SITE_URL}${canonicalPath}`
+  const bgHref = `${SITE_URL}/bg${canonicalPath === '/' ? '' : canonicalPath}`
+
+  return (
+    <>
+      <link rel='alternate' hrefLang='en' href={enHref} />
+      <link rel='alternate' hrefLang='bg' href={bgHref} />
+      <link rel='alternate' hrefLang='x-default' href={enHref} />
+      <link rel='canonical' href={enHref} />
+    </>
+  )
+}
+
 function RootComponent() {
   const { user } = Route.useLoaderData()
   const setUser = useAuthStore((s) => s.setUser)
@@ -69,6 +89,7 @@ function RootComponent() {
 
   return (
     <>
+      <HreflangLinks />
       <Header />
       <Outlet />
       <Footer />
@@ -90,7 +111,7 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html suppressHydrationWarning lang={getLocale()}>
       <head>
         <HeadContent />
       </head>

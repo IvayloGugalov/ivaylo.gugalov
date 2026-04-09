@@ -15,12 +15,17 @@
     "auth:generate": "bunx @better-auth/cli generate",
     "lint": "biome lint --write src/.",
     "format": "biome format --write src/.",
-    "check": "biome check --write src/."
+    "check": "biome check --write src/.",
+    "i18n:compile": "bunx @inlang/paraglide-js compile --project ./project.inlang --outdir ./src/paraglide",
+    "i18n:lint": "bunx @inlang/cli@latest lint --project ./project.inlang",
+    "i18n:export": "bunx @inlang/cli@latest export --project ./project.inlang --plugin-id plugin.inlang.messageFormat --outdir ./translations/",
+    "i18n:import": "bunx @inlang/cli@latest import --project ./project.inlang --plugin-id plugin.inlang.messageFormat"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
     "@fontsource/geist-sans": "^5.2.5",
     "@gsap/react": "^2.1.2",
+    "@inlang/paraglide-js": "^2.15.1",
     "@mdx-js/mdx": "^3.1.1",
     "@mdx-js/react": "^3.1.1",
     "@neondatabase/serverless": "^1.0.2",

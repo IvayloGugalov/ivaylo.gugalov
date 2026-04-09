@@ -10,15 +10,9 @@ import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { useAuthStore } from '@/store/auth'
 import { useSignOut } from '@/hooks/use-sign-out'
 import { ThemeToggle } from './ThemeToggle'
+import { LanguageSwitcher } from './LanguageSwitcher'
 import { GITHUB_USERNAME } from '@/constants/site'
-
-const NAV_LINKS = [
-  { to: '/about', label: 'About' },
-  { to: '/projects', label: 'Projects' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/uses', label: 'Uses' },
-  { to: '/contact', label: 'Contact' },
-] as const
+import * as m from '../paraglide/messages'
 
 export function Header() {
   const { pathname } = useLocation()
@@ -27,9 +21,13 @@ export function Header() {
   const signOut = useSignOut({ redirectTo: '/' })
 
   const navLinks = [
-    ...NAV_LINKS,
-    ...(user?.role === 'admin' ? [{ to: '/admin', label: 'Admin' } as const] : []),
-  ]
+    { to: '/about', label: m.nav_about() },
+    { to: '/projects', label: m.nav_projects() },
+    { to: '/blog', label: m.nav_blog() },
+    { to: '/uses', label: m.nav_uses() },
+    { to: '/contact', label: m.nav_contact() },
+    ...(user?.role === 'admin' ? [{ to: '/admin', label: m.nav_admin() }] : []),
+  ] as const
 
   return (
     <header className='sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md'>
@@ -62,6 +60,7 @@ export function Header() {
         </Activity>
 
         <div className='flex items-center gap-2'>
+          <LanguageSwitcher />
           <ThemeToggle />
 
           {/* Auth */}
@@ -91,7 +90,7 @@ export function Header() {
                     onClick={async () => await signOut()}
                     className='border-border text-text-secondary hover:text-text-primary hover:bg-surface-raised cursor-pointer'
                   >
-                    Sign out
+                    {m.nav_sign_out()}
                   </Button>
                 </PopoverContent>
               </Popover>
@@ -101,7 +100,7 @@ export function Header() {
                 onClick={openDialog}
                 className='px-3 py-1.5 h-auto text-sm font-medium bg-accent-primary text-background hover:bg-foreground hover:text-background transition-colors rounded-md cursor-pointer'
               >
-                Sign in
+                {m.nav_sign_in()}
               </Button>
             ))}
 

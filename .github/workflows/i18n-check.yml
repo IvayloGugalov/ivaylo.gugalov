@@ -1,0 +1,33 @@
+name: i18n Check
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'messages/**'
+      - 'project.inlang/**'
+  pull_request:
+    paths:
+      - 'messages/**'
+      - 'project.inlang/**'
+
+jobs:
+  i18n-lint:
+    runs-on: ubuntu-latest
+    name: Check translations
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Compile Paraglide
+        run: bunx @inlang/paraglide-js compile --project ./project.inlang --outdir ./src/paraglide
+
+      - name: Lint translations (check for missing keys)
+        run: bunx @inlang/cli@latest lint --project ./project.inlang --fail-on-warnings
+        continue-on-error: true  # Remove once bg.json is fully translated

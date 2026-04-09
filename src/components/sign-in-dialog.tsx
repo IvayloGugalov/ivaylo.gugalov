@@ -15,6 +15,7 @@ import {
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import useLocalStorage, { type AuthProvider } from '@/hooks/use-local-storage'
 import { useSocialSignIn } from '@/hooks/use-social-sign-in'
+import * as m from '../paraglide/messages'
 
 export function SignInDialog() {
   const { open, setOpen, closeDialog: closeSignInDialog } = useSignInDialog()
@@ -36,9 +37,9 @@ export function SignInDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className='sm:max-w-120'>
         <DialogHeader>
-          <DialogTitle className='text-left text-2xl'>Sign in</DialogTitle>
+          <DialogTitle className='text-left text-2xl'>{m.common_sign_in_title()}</DialogTitle>
           <DialogDescription className='text-left'>
-            Choose a provider to sign in to your account.
+            {m.common_sign_in_description()}
           </DialogDescription>
         </DialogHeader>
         <div className='my-6 flex flex-col gap-4'>
@@ -52,7 +53,7 @@ export function SignInDialog() {
             ) : (
               <Github className='size-4' />
             )}
-            Continue with GitHub
+            {m.common_continue_with_github()}
             {lastUsedProvider === 'github' && <LastUsed />}
           </Button>
 
@@ -66,7 +67,7 @@ export function SignInDialog() {
             ) : (
               <GoogleIcon className='size-4' />
             )}
-            Continue with Google
+            {m.common_continue_with_google()}
             {lastUsedProvider === 'google' && <LastUsed />}
           </Button>
         </div>
@@ -89,7 +90,7 @@ export function SignInDialog() {
 function LastUsed() {
   return (
     <Badge variant='outline' className='absolute -top-2 -right-2 p-2 bg-background'>
-      Last used
+      {m.common_last_used()}
     </Badge>
   )
 }

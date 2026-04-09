@@ -9,6 +9,7 @@ import { GITHUB_PROFILE_URL, SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/con
 import { buildMeta } from '@/lib/seo'
 import { orpc } from '@/orpc/client'
 import { useGithubStats } from '@/orpc/queries/stats.query'
+import * as m from '../paraglide/messages'
 
 export const Route = createFileRoute('/')({
   loader: ({ context }) => {
@@ -43,7 +44,7 @@ function GithubStats() {
           value={stats.stars}
           className='text-lg font-semibold text-text-primary'
         />
-        <span className='text-xs text-text-muted'>GitHub stars</span>
+        <span className='text-xs text-text-muted'>{m.home_github_stars()}</span>
       </div>
     </a>
   )
@@ -79,12 +80,12 @@ function HomePage() {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           className='text-xs font-semibold tracking-[0.2em] uppercase text-accent-primary mb-6'
         >
-          Software Engineer
+          {m.home_kicker()}
         </motion.p>
 
         {/* Heading line 1 — SplitText char animation */}
         <SplitText
-          text='Building things'
+          text={m.home_hero_line1()}
           tag='h1'
           className='text-6xl md:text-8xl font-bold tracking-tighter text-text-primary leading-[1.05] mb-0'
           splitType='chars'
@@ -104,7 +105,7 @@ function HomePage() {
           transition={{ duration: 0.8, delay: 0.45, ease: [0.16, 1, 0.3, 1] }}
           className='text-6xl md:text-8xl font-bold tracking-tighter leading-[1.05] mb-8'
         >
-          for <span className='gradient-text'>the web</span>
+          <span className='gradient-text'>{m.home_hero_line2()}</span>
           <span className='text-text-primary'>.</span>
         </motion.div>
 
@@ -115,7 +116,7 @@ function HomePage() {
           transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className='text-lg text-text-secondary max-w-xl mb-10'
         >
-          Full-stack engineer. .NET + React. Writing about it.
+          {m.home_tagline()}
         </motion.p>
 
         {/* CTA */}
@@ -136,7 +137,7 @@ function HomePage() {
               e.currentTarget.style.boxShadow = ''
             }}
           >
-            Read the blog
+            {m.home_cta_blog()}
           </Link>
         </motion.div>
 

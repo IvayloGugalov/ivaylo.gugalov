@@ -1,4 +1,5 @@
 import { Github, Linkedin, Mail } from 'lucide-react'
+import * as m from '../paraglide/messages'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -6,7 +7,7 @@ export default function Footer() {
   return (
     <footer className='site-footer mt-20 px-4 pb-10 pt-8 text-text-muted'>
       <div className='page-wrap flex flex-col items-center justify-between gap-4 sm:flex-row'>
-        <p className='m-0 text-sm'>&copy; {year} Your Name. All rights reserved.</p>
+        <p className='m-0 text-sm'>{m.footer_copyright({ year })}</p>
         <div className='flex items-center gap-3'>
           <a
             href='https://github.com/your-username'
