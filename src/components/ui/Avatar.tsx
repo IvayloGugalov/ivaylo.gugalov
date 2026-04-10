@@ -9,7 +9,7 @@ export function Avatar({ src, alt, size = 32 }: AvatarProps) {
     return (
       <div
         style={{ width: size, height: size }}
-        className='rounded-full bg--(--) flex items-center justify-center text-white text-xs font-semibold'
+        className='rounded-full bg-accent-muted flex items-center justify-center text-accent-primary text-xs font-semibold'
       >
         {alt.charAt(0).toUpperCase()}
       </div>

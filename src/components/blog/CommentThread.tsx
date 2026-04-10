@@ -44,7 +44,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
 
   return (
     <section className='mt-16'>
-      <h2 className='font-[Fraunces] text-2xl font-bold text--(--) mb-6'>
+      <h2 className='text-2xl font-bold text-text-primary mb-6'>
         {m.blog_comments_heading({ count: comments.length })}
       </h2>
 
@@ -76,7 +76,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
           }}
           placeholder={replyTo ? m.blog_comment_placeholder_reply() : m.blog_comment_placeholder_new()}
           rows={3}
-          className='w-full rounded-lg border border--(--) bg-accent p-3 text-sm text--(--) placeholder:text--(--) focus:outline-none focus:border--(--) resize-none'
+          className='w-full rounded-lg border border-border bg-surface-raised p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-primary resize-none'
         />
         <div className='flex gap-2'>
           <Button type='submit' disabled={createComment.isPending || !content.trim()}>

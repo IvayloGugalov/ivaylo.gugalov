@@ -23,18 +23,18 @@ export default function CommentItem({
       <Avatar src={comment.user.image} alt={comment.userId ?? 'User'} size={32} />
       <div className='flex-1'>
         <div className='flex items-center gap-2 mb-1'>
-          <span className='text-sm font-medium text--(--)'>{comment.user.name}</span>
-          <span className='text-xs text--(--)'>
+          <span className='text-sm font-medium text-text-primary'>{comment.user.name}</span>
+          <span className='text-xs text-text-muted'>
             {new Date(comment.createdAt).toLocaleString()}
           </span>
         </div>
-        <p className='text-sm text--(--)'>{comment.content}</p>
+        <p className='text-sm text-text-secondary'>{comment.content}</p>
         <div className='flex gap-3 mt-2'>
           {currentUserId && onReply && (
             <Button
               type='button'
               onClick={onReply}
-              className='text-xs text--(--) hover:text--(--) transition-colors'
+              className='text-xs text-text-muted hover:text-accent-primary transition-colors'
             >
               {m.blog_comment_reply()}
             </Button>
@@ -43,7 +43,7 @@ export default function CommentItem({
             <Button
               type='button'
               onClick={onDelete}
-              className='text-xs text--(--) hover:text-destructive transition-colors'
+              className='text-xs text-text-muted hover:text-destructive transition-colors'
             >
               {m.blog_comment_delete()}
             </Button>

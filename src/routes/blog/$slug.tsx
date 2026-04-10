@@ -112,15 +112,15 @@ function BlogPostPage() {
   }, [post.code])
 
   return (
-    <main className='mx-auto max-w-3xl px-4 py-16'>
+    <main className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
       <header className='mb-10'>
-        <p className='text-sm text-(--sea-ink-soft) mb-2'>
+        <p className='text-sm text-text-muted mb-2'>
           {new Date(post.frontmatter.date).toLocaleString()} · {m.blog_views({ count: meta.views })}
         </p>
-        <h1 className='font-[Fraunces] text-4xl font-bold text-(--sea-ink) mb-3'>
+        <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {post.frontmatter.title}
         </h1>
-        <p className='text-(--sea-ink-soft)'>{post.frontmatter.description}</p>
+        <p className='text-text-secondary'>{post.frontmatter.description}</p>
       </header>
 
       <ReactionBar targetId={slug} targetType='post' />

@@ -55,8 +55,8 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
               'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border transition-colors',
               'disabled:opacity-40 disabled:cursor-not-allowed',
               active
-                ? 'border--(--) bg--(--)/10 text--(--)'
-                : 'border--(--) hover:border--(--) hover:bg--(--)',
+                ? 'border-accent-glow bg-accent-primary/10 text-accent-primary'
+                : 'border-border hover:border-accent-glow hover:bg-surface',
             ].join(' ')}
           >
             <span>{emoji}</span>
