@@ -30,4 +30,3 @@ jobs:
 
       - name: Lint translations (check for missing keys)
         run: bunx @inlang/cli@latest lint --project ./project.inlang --fail-on-warnings
-        continue-on-error: true  # Remove once bg.json is fully translated

@@ -68,13 +68,14 @@ function HreflangLinks() {
   const canonicalPath = location.pathname
   const enHref = `${SITE_URL}${canonicalPath}`
   const bgHref = `${SITE_URL}/bg${canonicalPath === '/' ? '' : canonicalPath}`
+  const canonicalHref = getLocale() === 'bg' ? bgHref : enHref
 
   return (
     <>
       <link rel='alternate' hrefLang='en' href={enHref} />
       <link rel='alternate' hrefLang='bg' href={bgHref} />
       <link rel='alternate' hrefLang='x-default' href={enHref} />
-      <link rel='canonical' href={enHref} />
+      <link rel='canonical' href={canonicalHref} />
     </>
   )
 }
