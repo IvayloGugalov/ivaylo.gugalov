@@ -33,7 +33,7 @@ function ProjectsPage() {
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.projects_heading()}
         </h1>
-        <p className='text-text-secondary mb-12'>{m.projects_description()}</p>
+        <p className='text-text-secondary leading-relaxed mb-12'>{m.projects_description()}</p>
       </FadeContent>
 
       {repos.length === 0 ? (

@@ -13,7 +13,7 @@ export function NotFound() {
       </p>
       <Link
         to='/'
-        className='inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent-primary text-background text-sm font-medium hover:bg-accent-glow transition-colors'
+        className='inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-accent-primary text-background text-sm font-medium hover:bg-foreground hover:text-background transition-colors'
       >
         {m.error_404_go_home()}
       </Link>

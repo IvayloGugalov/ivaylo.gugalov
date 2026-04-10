@@ -11,7 +11,7 @@ export function BlogCard({ post }: BlogCardProps) {
     <Link
       to='/blog/$slug'
       params={{ slug: post.slug }}
-      className='group flex items-start justify-between py-5 border-b border-border hover:bg-surface transition-colors duration-200 no-underline pl-3 pr-4 border-l-2 border-l-transparent hover:border-l-accent-primary cursor-pointer'
+      className='group flex items-start justify-between py-5 border-b border-border hover:bg-surface transition-colors duration-200 no-underline px-4 cursor-pointer'
     >
       <div className='flex-1 min-w-0 pr-4'>
         <h2 className='text-lg font-medium text-text-primary group-hover:text-accent-primary transition-colors duration-200 mb-1'>
