@@ -48,16 +48,17 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
           <Button
             key={emoji}
             type='button'
+            variant='ghost'
             disabled={isPending}
             title={user ? `React with ${emoji}` : 'Sign in to react'}
             aria-label={`React with ${emoji}${count > 0 ? ` (${count})` : ''}`}
             onClick={() => handleClick(emoji)}
             className={[
-              'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border transition-colors min-w-12',
+              'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border transition-colors cursor-pointer',
               'disabled:opacity-40 disabled:cursor-not-allowed',
               active
-                ? 'border-accent-glow bg-accent-primary/10 text-accent-primary'
-                : 'border-border hover:border-accent-glow hover:bg-surface',
+                ? 'border-accent-glow bg-accent-primary/10 text-accent-primary hover:bg-accent-primary/20 hover:text-accent-primary'
+                : 'border-border text-text-secondary hover:border-accent-glow hover:bg-surface hover:text-text-primary',
             ].join(' ')}
           >
             <span>{emoji}</span>

@@ -12,11 +12,12 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
     <div className='flex flex-wrap gap-2'>
       <Button
         type='button'
+        variant='ghost'
         onClick={() => onSelect(null)}
-        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
+        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer border ${
           activeTag === null
-            ? 'bg-accent-muted text-accent-primary border border-accent-glow'
-            : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
+            ? 'bg-accent-muted text-accent-primary border-accent-glow hover:bg-accent-muted hover:text-accent-primary'
+            : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:border-accent-glow hover:bg-surface'
         }`}
       >
         {m.blog_filter_all()}
@@ -25,11 +26,12 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
         <Button
           key={tag}
           type='button'
+          variant='ghost'
           onClick={() => onSelect(tag)}
-          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
+          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer border ${
             activeTag === tag
-              ? 'bg-accent-muted text-accent-primary border border-accent-glow'
-              : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
+              ? 'bg-accent-muted text-accent-primary border-accent-glow hover:bg-accent-muted hover:text-accent-primary'
+              : 'bg-surface text-text-secondary border-border hover:text-text-primary hover:border-accent-glow hover:bg-surface'
           }`}
         >
           {tag}
