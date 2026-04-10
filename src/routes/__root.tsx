@@ -117,7 +117,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body
         suppressHydrationWarning
-        className='font-sans antialiased wrap-anywhere selection:bg-[rgba(79,184,178,0.24)]'
+        className='font-sans antialiased wrap-anywhere selection:bg-accent-muted selection:text-accent-primary'
       >
         <a
           href='#main-content'

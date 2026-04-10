@@ -270,6 +270,15 @@ body::after {
   transform: scaleX(var(--skill-scale, 0));
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .skill-bar-fill {
+    transition: none;
+  }
+  .skill-bar-fill.animate {
+    transform: scaleX(var(--skill-scale, 0));
+  }
+}
+
 /* ── Prose override (dark) ────────────────────────────────── */
 .prose {
   --tw-prose-body: #8b949e;

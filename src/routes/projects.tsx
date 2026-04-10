@@ -28,7 +28,7 @@ function ProjectsPage() {
   const { data: repos } = useGithubRepos()
 
   return (
-    <main className='mx-auto max-w-5xl px-4 py-24 md:py-32'>
+    <main id='main-content' className='mx-auto max-w-5xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.projects_heading()}
