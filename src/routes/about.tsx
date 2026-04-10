@@ -101,7 +101,7 @@ function About() {
         </h1>
       </FadeContent>
 
-      <div className='space-y-2 mb-12'>
+      <div className='space-y-6 mb-12'>
         <ScrollReveal
           containerClassName='!text-lg !text-text-secondary !leading-relaxed'
           textClassName='!text-lg !text-text-secondary !leading-relaxed'

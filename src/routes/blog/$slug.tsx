@@ -120,7 +120,7 @@ function BlogPostPage() {
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {post.frontmatter.title}
         </h1>
-        <p className='text-text-secondary'>{post.frontmatter.description}</p>
+        <p className='text-text-secondary leading-relaxed'>{post.frontmatter.description}</p>
       </header>
 
       <ReactionBar targetId={slug} targetType='post' />

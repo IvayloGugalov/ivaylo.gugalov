@@ -41,7 +41,7 @@ function BlogIndexPage() {
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.blog_heading()}
         </h1>
-        <p className='text-text-secondary mb-8'>{m.blog_description()}</p>
+        <p className='text-text-secondary leading-relaxed mb-8'>{m.blog_description()}</p>
         {allTags.length > 0 && (
           <TagFilter tags={allTags} activeTag={activeTag} onSelect={setActiveTag} />
         )}

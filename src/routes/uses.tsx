@@ -19,7 +19,7 @@ function UsesPage() {
       <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
         {m.uses_heading()}
       </h1>
-      <p className='text-text-secondary mb-12'>{m.uses_description()}</p>
+      <p className='text-text-secondary leading-relaxed mb-12'>{m.uses_description()}</p>
       <div className='space-y-10'>
         <Section title={m.uses_section_editor()}>
           <Item label='VS Code' description='Primary editor with a custom dark theme.' />
