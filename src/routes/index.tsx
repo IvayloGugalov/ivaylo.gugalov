@@ -48,7 +48,7 @@ function HomePage() {
       {/* Aurora background */}
       <div className='absolute inset-0 -z-10 opacity-25'>
         <Aurora
-          colorStops={['oklch(0.74 0.13 72)', 'oklch(0.54 0.15 65)', 'oklch(0.18 0.04 65)']}
+          colorStops={['#dd9c42', '#a85700', '#1d0d00']}
           amplitude={1.0}
           blend={0.5}
           speed={0.4}
