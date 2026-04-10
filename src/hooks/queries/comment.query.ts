@@ -1,23 +1,17 @@
 import {
-  keepPreviousData,
-  useInfiniteQuery,
   useMutation,
-  useQuery,
   useQueryClient,
+  useSuspenseInfiniteQuery,
+  useSuspenseQuery,
 } from '@tanstack/react-query'
 import { orpc, type CommentsListInput } from '@/orpc/client'
 
-export function useListComments(
-  input: (pageParam: Date | undefined) => CommentsListInput,
-  enabled = true,
-) {
-  return useInfiniteQuery(
+export function useListComments(input: (pageParam: Date | undefined) => CommentsListInput) {
+  return useSuspenseInfiniteQuery(
     orpc.comments.listComments.infiniteOptions({
-      input: input,
+      input,
       initialPageParam: undefined,
       getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-      placeholderData: keepPreviousData,
-      enabled,
     }),
   )
 }
@@ -50,7 +44,7 @@ export function useDeleteComment(postSlug: string) {
 }
 
 export function useGetReactions(targetId: string, targetType: 'post' | 'comment') {
-  return useQuery(
+  return useSuspenseQuery(
     orpc.comments.getReactions.queryOptions({ input: { targetId, targetType } }),
   )
 }

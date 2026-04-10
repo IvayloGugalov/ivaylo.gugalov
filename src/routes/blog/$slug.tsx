@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
+import { Suspense, useEffect, useState } from 'react'
+import { Link, createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { Loader2 } from 'lucide-react'
@@ -31,15 +31,15 @@ export const Route = createFileRoute('/blog/$slug')({
 
     if (!post) throw notFound()
 
-    context.queryClient.ensureQueryData(
+    context.queryClient.prefetchQuery(
       orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
     )
-    context.queryClient.ensureQueryData(
+    context.queryClient.prefetchQuery(
       orpc.comments.getReactions.queryOptions({
         input: { targetId: slug, targetType: 'post' },
       }),
     )
-    context.queryClient.ensureInfiniteQueryData(
+    context.queryClient.prefetchInfiniteQuery(
       orpc.comments.listComments.infiniteOptions({
         input: () => ({ postSlug: slug }),
         initialPageParam: undefined,
@@ -95,10 +95,18 @@ export const Route = createFileRoute('/blog/$slug')({
   component: BlogPostPage,
 })
 
+function PostMetaLine({ slug, date }: { slug: string; date: string }) {
+  const { data: meta } = useGetPostMeta(slug)
+  return (
+    <p className='text-sm text-text-muted mb-2'>
+      {new Date(date).toLocaleString()} · {m.blog_views({ count: meta.views })}
+    </p>
+  )
+}
+
 function BlogPostPage() {
   const { slug } = Route.useParams()
   const { data: post } = useGetPost(slug)
-  const { data: meta } = useGetPostMeta(slug)
   const [MDXContent, setMDXContent] = useState<React.ComponentType | null>(null)
 
   useEffect(() => {
@@ -113,23 +121,59 @@ function BlogPostPage() {
 
   return (
     <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
+      <Link
+        to='/blog'
+        className='inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-8'
+      >
+        <span aria-hidden>←</span>
+        {m.blog_back_to_posts()}
+      </Link>
+
       <header className='mb-10'>
-        <p className='text-sm text-text-muted mb-2'>
-          {new Date(post.frontmatter.date).toLocaleString()} · {m.blog_views({ count: meta.views })}
-        </p>
+        <Suspense
+          fallback={
+            <p className='text-sm text-text-muted mb-2'>
+              {new Date(post.frontmatter.date).toLocaleString()}
+            </p>
+          }
+        >
+          <PostMetaLine slug={slug} date={post.frontmatter.date} />
+        </Suspense>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {post.frontmatter.title}
         </h1>
         <p className='text-text-secondary leading-relaxed'>{post.frontmatter.description}</p>
       </header>
 
-      <ReactionBar targetId={slug} targetType='post' />
+      <Suspense
+        fallback={
+          <div className='flex gap-2'>
+            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+          </div>
+        }
+      >
+        <ReactionBar targetId={slug} targetType='post' />
+      </Suspense>
 
       <article className='prose prose-neutral dark:prose-invert max-w-none mt-10'>
         {MDXContent ? <MDXContent /> : <Loader />}
       </article>
 
-      <CommentThread postSlug={slug} />
+      <Suspense
+        fallback={
+          <div className='mt-16 space-y-4'>
+            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
+            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
+            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
+          </div>
+        }
+      >
+        <CommentThread postSlug={slug} />
+      </Suspense>
     </main>
   )
 }
