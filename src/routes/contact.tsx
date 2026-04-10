@@ -40,13 +40,11 @@ function ContactPage() {
   return (
     <main id='main-content' className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
-        <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          {m.contact_kicker()}
-        </p>
+        <p className='text-sm text-text-muted mb-4'>{m.contact_kicker()}</p>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.contact_heading()}
         </h1>
-        <p className='text-text-secondary mb-12'>
+        <p className='text-text-secondary leading-relaxed mb-12'>
           {m.contact_description()}
         </p>
       </FadeContent>

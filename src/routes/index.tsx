@@ -106,7 +106,7 @@ function HomePage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className='text-lg text-text-secondary max-w-xl mb-10'
+          className='text-lg leading-relaxed text-text-secondary max-w-xl mb-10'
         >
           {m.home_tagline()}
         </motion.p>

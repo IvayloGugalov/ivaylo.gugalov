@@ -28,7 +28,7 @@ export default function CommentItem({
             {new Date(comment.createdAt).toLocaleString()}
           </span>
         </div>
-        <p className='text-sm text-text-secondary'>{comment.content}</p>
+        <p className='text-sm text-text-secondary leading-relaxed'>{comment.content}</p>
         <div className='flex gap-3 mt-2'>
           {currentUserId && onReply && (
             <Button
