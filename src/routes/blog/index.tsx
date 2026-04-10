@@ -35,17 +35,13 @@ function BlogIndexPage() {
   const filtered = activeTag ? posts.filter((p) => p.tags.includes(activeTag)) : posts
 
   return (
-    <main className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
+    <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
-        <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          {m.blog_kicker()}
-        </p>
+        <p className='text-base text-text-secondary mb-4'>{m.blog_kicker()}</p>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.blog_heading()}
         </h1>
-        <p className='text-text-secondary mb-8'>
-          {m.blog_description()}
-        </p>
+        <p className='text-text-secondary mb-8'>{m.blog_description()}</p>
         {allTags.length > 0 && (
           <TagFilter tags={allTags} activeTag={activeTag} onSelect={setActiveTag} />
         )}

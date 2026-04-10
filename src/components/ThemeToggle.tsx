@@ -13,7 +13,7 @@ export function ThemeToggle() {
       size='icon'
       onClick={toggle}
       aria-label={mode === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      className='rounded-lg bg-transparent hover:bg-surface-raised text-text-secondary hover:text-text-primary transition-colors cursor-pointer'
+      className='size-11 rounded-lg bg-transparent hover:bg-surface-raised text-text-secondary hover:text-text-primary transition-colors cursor-pointer'
     >
       {mode === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
     </Button>

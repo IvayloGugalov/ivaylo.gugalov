@@ -22,7 +22,7 @@ export function LanguageSwitcher() {
   return (
     <Button
       onClick={handleSwitch}
-      className='px-2 py-1 text-xs font-medium rounded border border-border hover:border-accent-primary transition-colors duration-200 cursor-pointer'
+      className=' px-2 text-xs font-medium rounded border border-border hover:border-accent-primary transition-colors duration-200 cursor-pointer'
       aria-label={`Switch to ${nextLocale === 'en' ? 'English' : 'Bulgarian'}`}
       title={`Switch to ${nextLocale === 'en' ? 'English' : 'Bulgarian'}`}
     >

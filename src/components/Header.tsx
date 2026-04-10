@@ -47,10 +47,10 @@ export function Header() {
               <Link
                 key={to}
                 to={to}
-                className='relative px-3 py-1.5 text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200 no-underline'
+                className='relative px-3 py-3 text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200 no-underline'
                 activeProps={{
                   className:
-                    'relative px-3 py-1.5 text-sm text-text-primary nav-active no-underline',
+                    'relative px-3 py-3 text-sm text-text-primary nav-active no-underline',
                 }}
               >
                 {label}
@@ -110,7 +110,7 @@ export function Header() {
               <Button
                 variant='ghost'
                 size='icon'
-                className='sm:hidden bg-transparent hover:bg-surface-raised text-text-secondary cursor-pointer'
+                className='sm:hidden size-11 bg-transparent hover:bg-surface-raised text-text-secondary cursor-pointer'
                 aria-label='Open menu'
               >
                 <Menu size={20} />
@@ -149,7 +149,7 @@ export function Header() {
           transform: translateX(-50%);
           width: calc(100% - 1.5rem);
           height: 2px;
-          background: #22d3ee;
+          background: var(--color-accent-primary);
           border-radius: 1px;
         }
       `}</style>

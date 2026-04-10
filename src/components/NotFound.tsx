@@ -3,7 +3,7 @@ import * as m from '../paraglide/messages'
 
 export function NotFound() {
   return (
-    <main className='mx-auto max-w-4xl px-4 py-32 text-center'>
+    <main id='main-content' className='mx-auto max-w-4xl px-4 py-32 text-center'>
       <p className='text-6xl font-bold text-accent-primary mb-4'>{m.error_404_code()}</p>
       <h1 className='text-3xl font-bold text-text-primary mb-4'>
         {m.error_404_heading()}

@@ -1,10 +1,9 @@
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
-import { Github, Linkedin, Mail, ChevronDown, Star } from 'lucide-react'
+import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react'
 
 import Aurora from '@/components/ui/reactbits/Aurora'
 import SplitText from '@/components/ui/reactbits/SplitText'
-import { Counter } from '@/components/Counter'
 import { GITHUB_PROFILE_URL, SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
 import { orpc } from '@/orpc/client'
@@ -36,27 +35,20 @@ function GithubStats() {
       href={GITHUB_PROFILE_URL}
       target='_blank'
       rel='noopener noreferrer'
-      className='inline-flex items-center gap-3 rounded-lg border border-border bg-surface px-4 py-3 hover:border-accent-glow transition-[border-color] duration-200 cursor-pointer'
+      className='text-text-muted hover:text-text-primary transition-colors duration-200 cursor-pointer'
     >
-      <Star className='size-5 text-yellow-400' fill='currentColor' />
-      <div className='flex flex-col leading-tight'>
-        <Counter
-          value={stats.stars}
-          className='text-lg font-semibold text-text-primary'
-        />
-        <span className='text-xs text-text-muted'>{m.home_github_stars()}</span>
-      </div>
+      ★ {stats.stars} GitHub stars
     </a>
   )
 }
 
 function HomePage() {
   return (
-    <main className='relative min-h-dvh flex flex-col items-center justify-center'>
+    <main id='main-content' className='relative min-h-dvh flex flex-col items-center justify-center'>
       {/* Aurora background */}
-      <div className='absolute inset-0 -z-10 opacity-40'>
+      <div className='absolute inset-0 -z-10 opacity-25'>
         <Aurora
-          colorStops={['#22d3ee', '#0891b2', '#164e63']}
+          colorStops={['oklch(0.74 0.13 72)', 'oklch(0.54 0.15 65)', 'oklch(0.18 0.04 65)']}
           amplitude={1.0}
           blend={0.5}
           speed={0.4}
@@ -68,7 +60,7 @@ function HomePage() {
         className='absolute inset-0 -z-10 pointer-events-none'
         style={{
           background:
-            'radial-gradient(ellipse 80% 60% at 50% 0%, transparent 40%, #080c10 100%)',
+            'radial-gradient(ellipse 80% 60% at 50% 0%, transparent 40%, var(--background) 100%)',
         }}
       />
 
@@ -78,7 +70,7 @@ function HomePage() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className='text-xs font-semibold tracking-[0.2em] uppercase text-accent-primary mb-6'
+          className='text-sm font-medium text-accent-primary mb-6'
         >
           {m.home_kicker()}
         </motion.p>
@@ -129,13 +121,6 @@ function HomePage() {
           <Link
             to='/blog'
             className='inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent-primary text-background font-semibold text-sm hover:bg-foreground hover:text-background transition-[background-color,color] duration-150 active:scale-[0.97] cursor-pointer no-underline'
-            style={{ ['--hover-shadow' as string]: '0 0 24px #22d3ee66' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.boxShadow = '0 0 24px #22d3ee66'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.boxShadow = ''
-            }}
           >
             {m.home_cta_blog()}
           </Link>

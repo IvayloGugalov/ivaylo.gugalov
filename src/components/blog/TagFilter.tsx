@@ -13,7 +13,7 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
       <Button
         type='button'
         onClick={() => onSelect(null)}
-        className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
+        className={` px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
           activeTag === null
             ? 'bg-accent-muted text-accent-primary border border-accent-glow'
             : 'bg-surface text-text-secondary border border-border hover:text-text-primary'
@@ -26,7 +26,7 @@ export function TagFilter({ tags, activeTag, onSelect }: TagFilterProps) {
           key={tag}
           type='button'
           onClick={() => onSelect(tag)}
-          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
+          className={` px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 cursor-pointer ${
             activeTag === tag
               ? 'bg-accent-muted text-accent-primary border border-accent-glow'
               : 'bg-surface text-text-secondary border border-border hover:text-text-primary'

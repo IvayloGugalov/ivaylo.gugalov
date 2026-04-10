@@ -38,7 +38,7 @@ const LINKS = [
 
 function ContactPage() {
   return (
-    <main className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
+    <main id='main-content' className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
         <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
           {m.contact_kicker()}

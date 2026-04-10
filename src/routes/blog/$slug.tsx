@@ -112,7 +112,7 @@ function BlogPostPage() {
   }, [post.code])
 
   return (
-    <main className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
+    <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
       <header className='mb-10'>
         <p className='text-sm text-text-muted mb-2'>
           {new Date(post.frontmatter.date).toLocaleString()} · {m.blog_views({ count: meta.views })}

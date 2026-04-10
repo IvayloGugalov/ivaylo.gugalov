@@ -64,7 +64,13 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
         }}
         className='mb-8 space-y-3'
       >
+        <label htmlFor='comment-input' className='sr-only'>
+          {replyTo
+            ? m.blog_comment_placeholder_reply()
+            : m.blog_comment_placeholder_new()}
+        </label>
         <textarea
+          id='comment-input'
           value={content}
           onChange={(e) => {
             setContent(e.target.value)
@@ -74,13 +80,21 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
               sessionStorage.removeItem(storageKey)
             }
           }}
-          placeholder={replyTo ? m.blog_comment_placeholder_reply() : m.blog_comment_placeholder_new()}
+          placeholder={
+            replyTo
+              ? m.blog_comment_placeholder_reply()
+              : m.blog_comment_placeholder_new()
+          }
           rows={3}
           className='w-full rounded-lg border border-border bg-surface-raised p-3 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-accent-primary resize-none'
         />
         <div className='flex gap-2'>
           <Button type='submit' disabled={createComment.isPending || !content.trim()}>
-            {createComment.isPending ? m.blog_comment_submit_pending() : replyTo ? m.blog_comment_reply() : m.blog_comment_submit()}
+            {createComment.isPending
+              ? m.blog_comment_submit_pending()
+              : replyTo
+                ? m.blog_comment_reply()
+                : m.blog_comment_submit()}
           </Button>
           {replyTo && (
             <Button variant='ghost' type='button' onClick={() => setReplyTo(null)}>

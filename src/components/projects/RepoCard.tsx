@@ -10,11 +10,13 @@ type GitHubRepo = Endpoints['GET /users/{username}/repos']['response']['data'][n
 
 interface RepoCardProps {
   repo: GitHubRepo
+  featured?: boolean
+  className?: string
 }
 
 const springValues: SpringOptions = { damping: 30, stiffness: 100, mass: 2 }
 
-export function RepoCard({ repo }: RepoCardProps) {
+export function RepoCard({ repo, featured = false, className = '' }: RepoCardProps) {
   const ref = useRef<HTMLDivElement>(null)
   const rotateX = useSpring(useMotionValue(0), springValues)
   const rotateY = useSpring(useMotionValue(0), springValues)
@@ -28,11 +30,11 @@ export function RepoCard({ repo }: RepoCardProps) {
   }
 
   return (
-    <div style={{ perspective: '800px' }} className='row-span-3 grid grid-rows-subgrid'>
+    <div style={{ perspective: '800px' }} className={`row-span-3 grid grid-rows-subgrid ${className}`}>
       <motion.div
         ref={ref}
         style={{ rotateX, rotateY, scale, transformStyle: 'preserve-3d' }}
-        className='row-span-3 grid grid-rows-subgrid rounded-lg border border-border bg-surface card-glow group'
+        className={`row-span-3 grid grid-rows-subgrid rounded-lg border border-border card-glow group ${featured ? 'bg-surface-raised' : 'bg-surface'}`}
         onMouseMove={handleMouse}
         onMouseEnter={() => scale.set(1.02)}
         onMouseLeave={() => {
@@ -49,14 +51,14 @@ export function RepoCard({ repo }: RepoCardProps) {
           className='row-span-3 grid grid-rows-subgrid rounded-lg cursor-pointer'
         >
           {/* Row 1 — title */}
-          <h3 className='font-semibold text-text-primary px-5 pt-5 group-hover:text-accent-primary transition-colors duration-200 self-start'>
+          <h3 className={`font-semibold text-text-primary px-5 pt-5 group-hover:text-accent-primary transition-colors duration-200 self-start ${featured ? 'text-xl' : ''}`}>
             {repo.name}
           </h3>
 
           {/* Row 2 — description */}
           <div className='px-5 py-2'>
             {repo.description && (
-              <p className='text-sm text-text-secondary line-clamp-2'>
+              <p className={`text-text-secondary line-clamp-2 ${featured ? 'text-base' : 'text-sm'}`}>
                 {repo.description}
               </p>
             )}

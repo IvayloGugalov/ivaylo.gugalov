@@ -71,17 +71,17 @@ function SkillBar({ name, level }: { name: string; level: number }) {
   return (
     <div ref={ref} className='flex items-center gap-4 py-2'>
       <span className='text-sm text-text-secondary w-36 shrink-0'>{name}</span>
-      <div className='flex-1 h-1.5 bg-surface-raised rounded-full overflow-hidden'>
+      <div
+        className='flex-1 h-1.5 bg-surface-raised rounded-full overflow-hidden'
+        role='progressbar'
+        aria-valuenow={level}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={name}
+      >
         <div
-          style={
-            {
-              height: '100%',
-              borderRadius: '9999px',
-              background: 'linear-gradient(90deg, #22d3ee, #2dd4bf)',
-              width: animate ? `${level}%` : '0%',
-              transition: 'width 700ms ease-out',
-            } as React.CSSProperties
-          }
+          className={`skill-bar-fill${animate ? ' animate' : ''}`}
+          style={{ '--skill-scale': level / 100 } as React.CSSProperties}
         />
       </div>
     </div>
@@ -90,11 +90,12 @@ function SkillBar({ name, level }: { name: string; level: number }) {
 
 function About() {
   return (
-    <main className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
+    <main id='main-content' className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
-        <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          {m.about_kicker()}
-        </p>
+        <div className='flex items-center gap-3 mb-6'>
+          <p className='text-sm text-text-muted'>{m.about_kicker()}</p>
+          <hr className='flex-1 border-border' />
+        </div>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-8'>
           {m.about_heading()}
         </h1>

@@ -30,23 +30,23 @@ function ProjectsPage() {
   return (
     <main className='mx-auto max-w-5xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
-        <p className='text-xs font-semibold tracking-widest text-accent-primary uppercase mb-4'>
-          {m.projects_kicker()}
-        </p>
         <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
           {m.projects_heading()}
         </h1>
-        <p className='text-text-secondary mb-12'>
-          {m.projects_description()}
-        </p>
+        <p className='text-text-secondary mb-12'>{m.projects_description()}</p>
       </FadeContent>
 
       {repos.length === 0 ? (
         <p className='text-text-muted'>{m.projects_no_repos()}</p>
       ) : (
-        <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-          {repos.map((repo) => (
-            <RepoCard key={repo.id} repo={repo} />
+        <div className='grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3'>
+          {repos.map((repo, i) => (
+            <RepoCard
+              key={repo.id}
+              repo={repo}
+              featured={i === 0}
+              className={i === 0 ? 'md:col-span-2 lg:col-span-1' : ''}
+            />
           ))}
         </div>
       )}

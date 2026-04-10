@@ -15,8 +15,10 @@ export const Route = createFileRoute('/uses')({
 
 function UsesPage() {
   return (
-    <main className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
-      <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>{m.uses_heading()}</h1>
+    <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
+      <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
+        {m.uses_heading()}
+      </h1>
       <p className='text-text-secondary mb-12'>{m.uses_description()}</p>
       <div className='space-y-10'>
         <Section title={m.uses_section_editor()}>
