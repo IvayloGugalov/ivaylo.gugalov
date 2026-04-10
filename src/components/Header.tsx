@@ -35,6 +35,7 @@ export function Header() {
         {/* Wordmark */}
         <Link
           to='/'
+          viewTransition
           className='font-semibold tracking-tight text-text-primary text-sm hover:text-accent-primary transition-colors duration-200'
         >
           {GITHUB_USERNAME}
@@ -47,6 +48,7 @@ export function Header() {
               <Link
                 key={to}
                 to={to}
+                viewTransition
                 className='relative px-3 py-3 text-sm text-text-secondary hover:text-accent-primary transition-colors duration-200 no-underline'
                 activeProps={{
                   className:
@@ -125,6 +127,7 @@ export function Header() {
                   <Link
                     key={to}
                     to={to}
+                    viewTransition
                     className='px-4 py-3 text-sm text-text-secondary hover:text-accent-primary hover:bg-surface transition-colors rounded-md no-underline'
                     activeProps={{
                       className:

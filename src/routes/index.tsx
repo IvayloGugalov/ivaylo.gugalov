@@ -120,6 +120,7 @@ function HomePage() {
         >
           <Link
             to='/blog'
+            viewTransition
             className='inline-flex items-center gap-2 px-6 py-3 rounded-md bg-accent-primary text-background font-semibold text-sm hover:bg-foreground hover:text-background transition-[background-color,color] duration-150 active:scale-[0.97] cursor-pointer no-underline'
           >
             {m.home_cta_blog()}
