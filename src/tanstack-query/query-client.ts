@@ -15,6 +15,9 @@ export const makeQueryClient = () => {
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        networkMode: 'offlineFirst',
+        // TODO: gcTime is currently at the 5-minute default. Consider aligning with
+        // the longest staleTime (1h for posts) once caching strategy is settled.
       },
       dehydrate: {
         shouldDehydrateQuery: (query) =>
@@ -38,7 +41,9 @@ export const makeQueryClient = () => {
         })
       },
       onSuccess: (_data, query) => {
-        console.log('[QueryCache] fetched:', JSON.stringify(query.queryKey))
+        if (import.meta.env.DEV) {
+          console.log('[QueryCache] fetched:', JSON.stringify(query.queryKey))
+        }
       },
     }),
     mutationCache: new MutationCache({
