@@ -3,6 +3,7 @@ import {
   useGetReactions,
   useAddReaction,
   useDeleteReaction,
+  usePendingReactions,
 } from '@/hooks/queries/comment.query'
 import { useSignInDialog } from '@/hooks/use-sign-in-dialog'
 import { Button } from '@/components/ui/button'
@@ -20,9 +21,18 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
   const { data: reactions = [] } = useGetReactions(targetId, targetType)
   const addReaction = useAddReaction(targetId, targetType)
   const deleteReaction = useDeleteReaction(targetId, targetType)
+  const pendingReactions = usePendingReactions()
 
   const reactionMap = new Map(reactions.map((r) => [r.emoji, r]))
   const isPending = addReaction.isPending || deleteReaction.isPending
+
+  // Build optimistic count overlay: +1 per pending addReaction for this target
+  const pendingCountMap = new Map<string, number>()
+  for (const pending of pendingReactions) {
+    if (pending.targetId === targetId && pending.targetType === targetType) {
+      pendingCountMap.set(pending.emoji, (pendingCountMap.get(pending.emoji) ?? 0) + 1)
+    }
+  }
 
   function handleClick(emoji: string) {
     if (!user) {
@@ -41,8 +51,11 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
     <div className='flex gap-2 flex-wrap'>
       {EMOJI_OPTIONS.map((emoji) => {
         const reaction = reactionMap.get(emoji)
-        const count = reaction?.count ?? 0
+        const confirmedCount = reaction?.count ?? 0
+        const pendingCount = pendingCountMap.get(emoji) ?? 0
+        const displayCount = confirmedCount + pendingCount
         const active = !!reaction?.reactionId
+        const hasPending = pendingCount > 0
 
         return (
           <Button
@@ -51,7 +64,7 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
             variant='ghost'
             disabled={isPending}
             title={user ? `React with ${emoji}` : 'Sign in to react'}
-            aria-label={`React with ${emoji}${count > 0 ? ` (${count})` : ''}`}
+            aria-label={`React with ${emoji}${displayCount > 0 ? ` (${displayCount})` : ''}`}
             onClick={() => handleClick(emoji)}
             className={[
               'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm border transition-colors cursor-pointer',
@@ -62,8 +75,15 @@ export function ReactionBar({ targetId, targetType }: ReactionBarProps) {
             ].join(' ')}
           >
             <span>{emoji}</span>
-            {count > 0 && (
-              <span className='text-xs font-medium tabular-nums'>{count}</span>
+            {displayCount > 0 && (
+              <span
+                className={[
+                  'text-xs font-medium tabular-nums transition-opacity',
+                  hasPending ? 'opacity-60' : '',
+                ].join(' ')}
+              >
+                {displayCount}
+              </span>
             )}
           </Button>
         )
