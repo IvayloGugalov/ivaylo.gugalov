@@ -35,11 +35,7 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
   )
 
   const comments = data?.pages.flatMap((p) => p.items) ?? []
-  const createComment = useCreateComment(postSlug, () => {
-    setContent('')
-    sessionStorage.removeItem(storageKey)
-    setReplyTo(null)
-  })
+  const createComment = useCreateComment(postSlug)
   const deleteComment = useDeleteComment(postSlug)
 
   return (
@@ -56,11 +52,16 @@ export function CommentThread({ postSlug }: CommentThreadProps) {
             openDialog()
             return
           }
-          createComment.mutate({
-            postSlug,
-            content: content.trim(),
-            parentId: replyTo ?? undefined,
-          })
+          createComment.mutate(
+            { postSlug, content: content.trim(), parentId: replyTo ?? undefined },
+            {
+              onSuccess: () => {
+                setContent('')
+                sessionStorage.removeItem(storageKey)
+                setReplyTo(null)
+              },
+            },
+          )
         }}
         className='mb-8 space-y-3'
       >
