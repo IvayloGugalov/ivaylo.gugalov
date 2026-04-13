@@ -8,6 +8,7 @@ import type { MDXModule } from 'mdx/types'
 import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog.query'
 import { CommentThread } from '@/components/blog/CommentThread'
 import { ReactionBar } from '@/components/blog/ReactionBar'
+import { ErrorFallback } from '@/components/ErrorFallback'
 import { orpc, client } from '@/orpc/client'
 import { SITE_URL, SITE_NAME, OG_IMAGE } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
@@ -92,6 +93,9 @@ export const Route = createFileRoute('/blog/$slug')({
   },
   pendingComponent: () => <Loader />,
   notFoundComponent: () => <ErrorComponent error={new Error('Post not found')} />,
+  errorComponent: ({ error, reset }) => (
+    <ErrorFallback message={error.message} onRetry={reset} />
+  ),
   component: BlogPostPage,
 })
 
