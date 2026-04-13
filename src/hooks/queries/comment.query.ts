@@ -53,7 +53,7 @@ export function useAddReaction(targetId: string, targetType: 'post' | 'comment')
 
   return useMutation({
     ...orpc.comments.addReaction.mutationOptions(),
-    onSuccess: () => void invalidateReactions(queryClient, targetId, targetType),
+    onSettled: () => invalidateReactions(queryClient, targetId, targetType),
   })
 }
 
@@ -62,7 +62,7 @@ export function useDeleteReaction(targetId: string, targetType: 'post' | 'commen
 
   return useMutation({
     ...orpc.comments.deleteReaction.mutationOptions(),
-    onSuccess: () => void invalidateReactions(queryClient, targetId, targetType),
+    onSettled: () => invalidateReactions(queryClient, targetId, targetType),
   })
 }
 
