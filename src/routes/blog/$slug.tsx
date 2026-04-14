@@ -1,23 +1,48 @@
-import { Suspense, useEffect, useState } from 'react'
-import { Link, createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
-import { run } from '@mdx-js/mdx'
-import * as runtime from 'react/jsx-runtime'
-import { Loader2 } from 'lucide-react'
-import type { MDXModule } from 'mdx/types'
+import { Suspense } from 'react'
+import { createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
+import { useSuspenseQuery } from '@tanstack/react-query'
+import { CompositeComponent } from '@tanstack/react-start/rsc'
 
-import { useGetPost, useGetPostMeta } from '@/hooks/queries/blog.query'
+import { orpc } from '@/orpc/client'
+import { postPageQueryOptions } from '@/hooks/queries/blog.query'
 import { CommentThread } from '@/components/blog/CommentThread'
 import { ReactionBar } from '@/components/blog/ReactionBar'
+import { PostMetaAndViews } from '@/components/blog/PostMetaAndViews'
 import { ErrorFallback } from '@/components/ErrorFallback'
-import { orpc, client } from '@/orpc/client'
 import { SITE_URL, SITE_NAME, OG_IMAGE } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
-import * as m from '../../paraglide/messages'
 
-function Loader() {
+function PostSkeleton() {
   return (
-    <div className='flex justify-center items-center min-h-dvh'>
-      <Loader2 className='size-8 animate-spin text-muted-foreground' />
+    <div className='mx-auto max-w-3xl px-4 py-24 md:py-32 animate-pulse'>
+      <div className='h-4 w-24 bg-surface-raised rounded mb-8' />
+      <div className='h-8 w-3/4 bg-surface-raised rounded mb-4' />
+      <div className='h-4 w-1/2 bg-surface-raised rounded mb-10' />
+      <div className='space-y-3'>
+        <div className='h-4 bg-surface-raised rounded' />
+        <div className='h-4 bg-surface-raised rounded' />
+        <div className='h-4 w-5/6 bg-surface-raised rounded' />
+      </div>
+    </div>
+  )
+}
+
+function ReactionSkeleton() {
+  return (
+    <div className='flex gap-2'>
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
+      ))}
+    </div>
+  )
+}
+
+function CommentSkeleton() {
+  return (
+    <div className='mt-16 space-y-4'>
+      <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
+      <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
+      <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
     </div>
   )
 }
@@ -26,12 +51,16 @@ export const Route = createFileRoute('/blog/$slug')({
   loader: async ({ params, context }) => {
     const { slug } = params
 
+    // Blocking: validates post exists and provides frontmatter for head() / JSON-LD.
     const post = await context.queryClient.ensureQueryData(
       orpc.blog.getPost.queryOptions({ input: { slug } }),
     )
 
     if (!post) throw notFound()
 
+    // Non-blocking: all resolve via Suspense boundaries in the component tree.
+    // getBlogPostPage also calls client.blog.getPost internally — hits mtime cache.
+    context.queryClient.prefetchQuery(postPageQueryOptions(slug))
     context.queryClient.prefetchQuery(
       orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
     )
@@ -91,7 +120,7 @@ export const Route = createFileRoute('/blog/$slug')({
       ],
     }
   },
-  pendingComponent: () => <Loader />,
+  pendingComponent: () => <PostSkeleton />,
   notFoundComponent: () => <ErrorComponent error={new Error('Post not found')} />,
   errorComponent: ({ error, reset }) => (
     <ErrorFallback message={error.message} onRetry={reset} />
@@ -99,85 +128,35 @@ export const Route = createFileRoute('/blog/$slug')({
   component: BlogPostPage,
 })
 
-function PostMetaLine({ slug, date }: { slug: string; date: string }) {
-  const { data: meta } = useGetPostMeta(slug)
+function BlogPostPage() {
+  const { slug } = Route.useParams()
+
   return (
-    <p className='text-sm text-text-muted mb-2'>
-      {new Date(date).toLocaleString()} · {m.blog_views({ count: meta.views })}
-    </p>
+    <Suspense fallback={<PostSkeleton />}>
+      <BlogPostComposite slug={slug} />
+    </Suspense>
   )
 }
 
-function BlogPostPage() {
-  const { slug } = Route.useParams()
-  const { data: post } = useGetPost(slug)
-  const [MDXContent, setMDXContent] = useState<React.ComponentType | null>(null)
-
-  useEffect(() => {
-    client.blog.incrementViews({ slug, title: post.frontmatter.title })
-  }, [slug, post.frontmatter.title])
-
-  useEffect(() => {
-    run(post.code, { ...runtime } as Parameters<typeof run>[1]).then((mod: MDXModule) => {
-      setMDXContent(() => mod.default)
-    })
-  }, [post.code])
+function BlogPostComposite({ slug }: { slug: string }) {
+  const { data } = useSuspenseQuery(postPageQueryOptions(slug))
 
   return (
-    <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
-      <Link
-        to='/blog'
-        className='inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-8'
-      >
-        <span aria-hidden>←</span>
-        {m.blog_back_to_posts()}
-      </Link>
-
-      <header className='mb-10'>
-        <Suspense
-          fallback={
-            <p className='text-sm text-text-muted mb-2'>
-              {new Date(post.frontmatter.date).toLocaleString()}
-            </p>
-          }
-        >
-          <PostMetaLine slug={slug} date={post.frontmatter.date} />
+    <CompositeComponent
+      src={data.src}
+      renderPostMeta={({ slug, date, title }) => (
+        <PostMetaAndViews slug={slug} date={date} title={title} />
+      )}
+      renderReactions={({ slug }) => (
+        <Suspense fallback={<ReactionSkeleton />}>
+          <ReactionBar targetId={slug} targetType='post' />
         </Suspense>
-        <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
-          {post.frontmatter.title}
-        </h1>
-        <p className='text-text-secondary leading-relaxed'>{post.frontmatter.description}</p>
-      </header>
-
-      <Suspense
-        fallback={
-          <div className='flex gap-2'>
-            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
-            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
-            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
-            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
-            <div className='h-8 w-14 rounded-full bg-surface-raised animate-pulse' />
-          </div>
-        }
-      >
-        <ReactionBar targetId={slug} targetType='post' />
-      </Suspense>
-
-      <article className='prose prose-neutral dark:prose-invert max-w-none mt-10'>
-        {MDXContent ? <MDXContent /> : <Loader />}
-      </article>
-
-      <Suspense
-        fallback={
-          <div className='mt-16 space-y-4'>
-            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
-            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
-            <div className='h-16 rounded-lg bg-surface-raised animate-pulse' />
-          </div>
-        }
-      >
-        <CommentThread postSlug={slug} />
-      </Suspense>
-    </main>
+      )}
+      renderComments={({ postSlug }) => (
+        <Suspense fallback={<CommentSkeleton />}>
+          <CommentThread postSlug={postSlug} />
+        </Suspense>
+      )}
+    />
   )
 }
