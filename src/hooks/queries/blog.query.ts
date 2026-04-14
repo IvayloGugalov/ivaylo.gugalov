@@ -1,6 +1,6 @@
 import { queryOptions, useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { orpc } from '@/orpc/client'
-import { getBlogPostPage } from '@/server/blog-post-page.server'
+import { getBlogPostPage } from '@/server/blog-post-page'
 
 export function useGetPost(slug: string) {
   return useSuspenseQuery(
