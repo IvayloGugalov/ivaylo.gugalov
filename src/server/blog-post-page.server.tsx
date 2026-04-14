@@ -2,7 +2,6 @@ import { createServerFn } from '@tanstack/react-start'
 import { createCompositeComponent } from '@tanstack/react-start/rsc'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
-import { z } from 'zod'
 import { client } from '@/orpc/client'
 
 type PostPageSlots = {
@@ -11,9 +10,8 @@ type PostPageSlots = {
   renderComments: (p: { postSlug: string }) => React.ReactNode
 }
 
-export const getBlogPostPage = createServerFn()
-  .validator(z.object({ slug: z.string().min(1) }))
-  .handler(async ({ data: { slug } }) => {
+export const getBlogPostPage = createServerFn().handler(async (ctx) => {
+  const { slug } = ctx.data as unknown as { slug: string }
     const post = await client.blog.getPost({ slug })
 
     if (!post) throw new Error(`Post not found: ${slug}`)
@@ -60,4 +58,6 @@ export const getBlogPostPage = createServerFn()
     ))
 
     return { src }
-  })
+  },
+)
+
