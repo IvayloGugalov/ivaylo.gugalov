@@ -15,9 +15,8 @@ export const makeQueryClient = () => {
     defaultOptions: {
       queries: {
         staleTime: 60 * 1000,
+        gcTime: 60 * 60_000, // match longest per-query staleTime (1h for blog posts)
         networkMode: 'offlineFirst',
-        // TODO: gcTime is currently at the 5-minute default. Consider aligning with
-        // the longest staleTime (1h for posts) once caching strategy is settled.
       },
       dehydrate: {
         shouldDehydrateQuery: (query) =>

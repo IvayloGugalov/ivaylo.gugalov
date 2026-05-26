@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { createCompositeComponent } from '@tanstack/react-start/rsc'
+import { Link } from '@tanstack/react-router'
 import { run } from '@mdx-js/mdx'
 import * as runtime from 'react/jsx-runtime'
 import { client } from '@/orpc/client'
@@ -25,13 +26,13 @@ export const getBlogPostPage = createServerFn().handler(async (ctx) => {
 
     const src = await createCompositeComponent((props: PostPageSlots) => (
       <main id='main-content' className='mx-auto max-w-3xl px-4 py-24 md:py-32'>
-        <a
-          href='/blog'
+        <Link
+          to='/blog'
           className='inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text-primary transition-colors mb-8'
         >
           <span aria-hidden>←</span>
           {' '}Back to posts
-        </a>
+        </Link>
 
         <header className='mb-10'>
           {props.renderPostMeta({

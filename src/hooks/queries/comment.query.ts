@@ -53,7 +53,25 @@ export function useAddReaction(targetId: string, targetType: 'post' | 'comment')
 
   return useMutation({
     ...orpc.comments.addReaction.mutationOptions(),
-    onSettled: () => invalidateReactions(queryClient, targetId, targetType),
+    onSuccess: (data, variables) => {
+      if ('already' in data) return
+      queryClient.setQueryData(
+        orpc.comments.getReactions.key({ input: { targetId, targetType } }),
+        (old) => {
+          if (!old) return old
+          const exists = old.find((r) => r.emoji === variables.emoji)
+          if (exists) {
+            return old.map((r) =>
+              r.emoji === variables.emoji
+                ? { ...r, count: r.count + 1, reactionId: data.id }
+                : r,
+            )
+          }
+          return [...old, { emoji: variables.emoji, count: 1, reactionId: data.id }]
+        },
+      )
+    },
+    onError: () => invalidateReactions(queryClient, targetId, targetType),
   })
 }
 
@@ -62,7 +80,22 @@ export function useDeleteReaction(targetId: string, targetType: 'post' | 'commen
 
   return useMutation({
     ...orpc.comments.deleteReaction.mutationOptions(),
-    onSettled: () => invalidateReactions(queryClient, targetId, targetType),
+    onSuccess: (_data, variables) => {
+      queryClient.setQueryData(
+        orpc.comments.getReactions.key({ input: { targetId, targetType } }),
+        (old) => {
+          if (!old) return old
+          return old
+            .map((r) =>
+              r.reactionId === variables.reactionId
+                ? { ...r, count: r.count - 1, reactionId: null }
+                : r,
+            )
+            .filter((r) => r.count > 0)
+        },
+      )
+    },
+    onError: () => invalidateReactions(queryClient, targetId, targetType),
   })
 }
 
