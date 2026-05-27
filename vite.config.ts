@@ -15,8 +15,10 @@ const config = defineConfig({
     sourcemapIgnoreList: (sourcePath) =>
       sourcePath.includes('node_modules'),
   },
-  legacy: {
-    skipWebSocketTokenCheck: true,
+  ssr: {
+    // better-auth uses kysely internally; externalize to avoid potential
+    // module-runner transport timeouts in Vite v8 RSC mode (unconfirmed issue)
+    external: ['kysely'],
   },
   plugins: [
     paraglideVitePlugin({
