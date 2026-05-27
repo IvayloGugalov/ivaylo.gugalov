@@ -3,6 +3,8 @@ import { motion } from 'motion/react'
 import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react'
 
 import Aurora from '@/components/ui/reactbits/Aurora'
+import { Hydrate } from '@tanstack/react-start'
+import { idle } from '@tanstack/react-start/hydration'
 import SplitText from '@/components/ui/reactbits/SplitText'
 import { GITHUB_PROFILE_URL, SITE_URL, SITE_NAME, SITE_DESCRIPTION } from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
@@ -47,12 +49,14 @@ function HomePage() {
     <main id='main-content' className='relative min-h-dvh flex flex-col items-center justify-center'>
       {/* Aurora background */}
       <div className='absolute inset-0 -z-10 opacity-25'>
-        <Aurora
-          colorStops={['#dd9c42', '#a85700', '#1d0d00']}
-          amplitude={1.0}
-          blend={0.5}
-          speed={0.4}
-        />
+        <Hydrate when={idle()}>
+          <Aurora
+            colorStops={['#dd9c42', '#a85700', '#1d0d00']}
+            amplitude={1.0}
+            blend={0.5}
+            speed={0.4}
+          />
+        </Hydrate>
       </div>
 
       {/* Subtle vignette */}

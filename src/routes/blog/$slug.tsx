@@ -2,6 +2,8 @@ import { Suspense } from 'react'
 import { createFileRoute, ErrorComponent, notFound } from '@tanstack/react-router'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { CompositeComponent } from '@tanstack/react-start/rsc'
+import { Hydrate } from '@tanstack/react-start'
+import { visible, idle } from '@tanstack/react-start/hydration'
 
 import { orpc } from '@/orpc/client'
 import { postPageQueryOptions } from '@/hooks/queries/blog.query'
@@ -148,14 +150,18 @@ function BlogPostComposite({ slug }: { slug: string }) {
         <PostMetaAndViews slug={slug} date={date} title={title} />
       )}
       renderReactions={({ slug }) => (
-        <Suspense fallback={<ReactionSkeleton />}>
-          <ReactionBar targetId={slug} targetType='post' />
-        </Suspense>
+        <Hydrate when={idle()}>
+          <Suspense fallback={<ReactionSkeleton />}>
+            <ReactionBar targetId={slug} targetType='post' />
+          </Suspense>
+        </Hydrate>
       )}
       renderComments={({ postSlug }) => (
-        <Suspense fallback={<CommentSkeleton />}>
-          <CommentThread postSlug={postSlug} />
-        </Suspense>
+        <Hydrate when={visible({ rootMargin: '400px' })}>
+          <Suspense fallback={<CommentSkeleton />}>
+            <CommentThread postSlug={postSlug} />
+          </Suspense>
+        </Hydrate>
       )}
     />
   )

@@ -9,10 +9,14 @@ import rsc from '@vitejs/plugin-rsc'
 const config = defineConfig({
   resolve: {
     tsconfigPaths: true,
+    dedupe: ['@tanstack/router-core'],
   },
   server: {
     sourcemapIgnoreList: (sourcePath) =>
       sourcePath.includes('node_modules'),
+  },
+  legacy: {
+    skipWebSocketTokenCheck: true,
   },
   plugins: [
     paraglideVitePlugin({

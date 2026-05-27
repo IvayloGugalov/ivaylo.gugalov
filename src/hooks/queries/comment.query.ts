@@ -5,7 +5,7 @@ import {
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query'
-import { orpc, type CommentsListInput, type Inputs } from '@/orpc/client'
+import { orpc, type CommentsListInput, type Inputs, type ReactionList } from '@/orpc/client'
 import { invalidateComments, invalidateReactions } from './invalidate'
 
 type AddReactionInput = Inputs['comments']['addReaction']
@@ -57,7 +57,7 @@ export function useAddReaction(targetId: string, targetType: 'post' | 'comment')
       if ('already' in data) return
       queryClient.setQueryData(
         orpc.comments.getReactions.key({ input: { targetId, targetType } }),
-        (old) => {
+        (old: ReactionList | undefined) => {
           if (!old) return old
           const exists = old.find((r) => r.emoji === variables.emoji)
           if (exists) {
@@ -83,7 +83,7 @@ export function useDeleteReaction(targetId: string, targetType: 'post' | 'commen
     onSuccess: (_data, variables) => {
       queryClient.setQueryData(
         orpc.comments.getReactions.key({ input: { targetId, targetType } }),
-        (old) => {
+        (old: ReactionList | undefined) => {
           if (!old) return old
           return old
             .map((r) =>

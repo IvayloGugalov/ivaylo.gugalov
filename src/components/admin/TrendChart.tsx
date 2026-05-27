@@ -69,7 +69,7 @@ export function TrendChart({ data = [], isLoading, isError }: TrendChartProps) {
               borderRadius: '8px',
               fontSize: '12px',
             }}
-            labelFormatter={formatDate}
+            labelFormatter={(label) => formatDate(String(label))}
           />
           <Legend wrapperStyle={{ fontSize: '12px' }} />
           <Bar
