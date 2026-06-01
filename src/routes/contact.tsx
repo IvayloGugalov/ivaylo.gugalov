@@ -19,20 +19,20 @@ const LINKS = [
   {
     icon: Github,
     label: 'GitHub',
-    href: 'https://github.com/your-username',
-    hint: '@your-username',
+    href: 'https://github.com/IvayloGugalov/',
+    hint: '@IvayloGugalov',
   },
   {
     icon: Linkedin,
     label: 'LinkedIn',
-    href: 'https://linkedin.com/in/your-profile',
-    hint: 'your-profile',
+    href: 'https://www.linkedin.com/in/ivaylo-gugalov-2b894619b/',
+    hint: 'ivaylo-gugalov',
   },
   {
     icon: Mail,
     label: 'Email',
-    href: 'mailto:you@example.com',
-    hint: 'you@example.com',
+    href: 'mailto:ivaylogugalov@gmail.com',
+    hint: 'ivaylogugalov@gmail.com',
   },
 ]
 
