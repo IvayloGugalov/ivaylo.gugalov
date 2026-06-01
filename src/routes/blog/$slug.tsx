@@ -60,9 +60,12 @@ export const Route = createFileRoute('/blog/$slug')({
 
     if (!post) throw notFound()
 
-    // Non-blocking: all resolve via Suspense boundaries in the component tree.
-    // getBlogPostPage also calls client.blog.getPost internally — hits mtime cache.
-    context.queryClient.prefetchQuery(postPageQueryOptions(slug))
+    // RSC page: awaited so the composite src is produced and dehydrated during SSR,
+    // letting the router's $RSC serialization adapter stream it in the initial
+    // payload (rather than deferring to a client-side fetch on first paint).
+    await context.queryClient.prefetchQuery(postPageQueryOptions(slug))
+
+    // Non-blocking: these resolve via Suspense boundaries in the component tree.
     context.queryClient.prefetchQuery(
       orpc.blog.getPostMeta.queryOptions({ input: { slug } }),
     )

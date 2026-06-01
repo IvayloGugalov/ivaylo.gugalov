@@ -5,12 +5,19 @@ import {
   useSuspenseInfiniteQuery,
   useSuspenseQuery,
 } from '@tanstack/react-query'
-import { orpc, type CommentsListInput, type Inputs, type ReactionList } from '@/orpc/client'
+import {
+  orpc,
+  type CommentsListInput,
+  type Inputs,
+  type ReactionList,
+} from '@/orpc/client'
 import { invalidateComments, invalidateReactions } from './invalidate'
 
 type AddReactionInput = Inputs['comments']['addReaction']
 
-export function useListComments(input: (pageParam: Date | undefined) => CommentsListInput) {
+export function useListComments(
+  input: (pageParam: Date | undefined) => CommentsListInput,
+) {
   return useSuspenseInfiniteQuery(
     orpc.comments.listComments.infiniteOptions({
       input,
@@ -56,7 +63,7 @@ export function useAddReaction(targetId: string, targetType: 'post' | 'comment')
     onSuccess: (data, variables) => {
       if ('already' in data) return
       queryClient.setQueryData(
-        orpc.comments.getReactions.key({ input: { targetId, targetType } }),
+        orpc.comments.getReactions.queryKey({ input: { targetId, targetType } }),
         (old: ReactionList | undefined) => {
           if (!old) return old
           const exists = old.find((r) => r.emoji === variables.emoji)
@@ -82,7 +89,7 @@ export function useDeleteReaction(targetId: string, targetType: 'post' | 'commen
     ...orpc.comments.deleteReaction.mutationOptions(),
     onSuccess: (_data, variables) => {
       queryClient.setQueryData(
-        orpc.comments.getReactions.key({ input: { targetId, targetType } }),
+        orpc.comments.getReactions.queryKey({ input: { targetId, targetType } }),
         (old: ReactionList | undefined) => {
           if (!old) return old
           return old

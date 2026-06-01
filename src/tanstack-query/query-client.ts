@@ -10,6 +10,28 @@ import { toast } from 'sonner'
 
 const serializer = new StandardRPCJsonSerializer()
 
+// TanStack Start RSC stubs (from createCompositeComponent / renderServerComponent)
+// carry their payload on this Symbol-keyed property. JSON serialization drops
+// symbols, so running RSC data through oRPC's serializer would strip the stream
+// and make <CompositeComponent> throw "missing RSC stream on src" after hydration.
+// Such data must pass through untouched so Start's router-level $RSC serialization
+// adapter can stream it across the SSR→client boundary instead.
+const RSC_STREAM = Symbol.for('tanstack.rsc.stream')
+
+const hasRscStream = (value: unknown): boolean =>
+  value != null &&
+  (typeof value === 'object' || typeof value === 'function') &&
+  RSC_STREAM in (value as object) &&
+  (value as Record<symbol, unknown>)[RSC_STREAM] !== undefined
+
+const containsRsc = (data: unknown): boolean => {
+  if (hasRscStream(data)) return true
+  if (data != null && typeof data === 'object') {
+    return Object.values(data as Record<string, unknown>).some(hasRscStream)
+  }
+  return false
+}
+
 export const makeQueryClient = () => {
   return new QueryClient({
     defaultOptions: {
@@ -22,12 +44,21 @@ export const makeQueryClient = () => {
         shouldDehydrateQuery: (query) =>
           defaultShouldDehydrateQuery(query) || query.state.status === 'pending',
         serializeData: (data) => {
+          // RSC stubs must reach the router's $RSC adapter alive — never JSON them.
+          if (containsRsc(data)) return data
           const [json, meta] = serializer.serialize(data)
           return { json, meta }
         },
       },
       hydrate: {
-        deserializeData: (data) => serializer.deserialize(data.json, data.meta),
+        deserializeData: (data) => {
+          // RSC data is passed through above (no { json, meta } envelope) and is
+          // already reconstructed into a live stub by the router's $RSC adapter.
+          if (data == null || typeof data !== 'object' || !('json' in data && 'meta' in data)) {
+            return data
+          }
+          return serializer.deserialize(data.json, data.meta)
+        },
       },
     },
     queryCache: new QueryCache({
