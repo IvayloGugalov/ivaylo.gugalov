@@ -42,6 +42,13 @@ const SplitText = ({
   const onCompleteRef = useRef(onLetterAnimationComplete)
   const [fontsLoaded, setFontsLoaded] = useState(false)
 
+  // Read the OS reduced-motion preference once at mount (SSR-guarded). When
+  // reduced, we skip the staggered tween and present the final visible state.
+  const prefersReducedMotion =
+    typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      : false
+
   useEffect(() => {
     onCompleteRef.current = onLetterAnimationComplete
   }, [onLetterAnimationComplete])
@@ -52,6 +59,10 @@ const SplitText = ({
     } else {
       document.fonts.ready.then(() => setFontsLoaded(true))
     }
+    // Failsafe: never let fonts.ready stall the reveal. If it hasn't resolved
+    // within 3s, proceed anyway so the text cannot stay permanently hidden.
+    const failsafe = window.setTimeout(() => setFontsLoaded(true), 3000)
+    return () => window.clearTimeout(failsafe)
   }, [])
 
   useGSAP(
@@ -61,6 +72,16 @@ const SplitText = ({
 
       const el = ref.current as HTMLElement & {
         _rbsplitInstance?: InstanceType<typeof GSAPSplitText>
+      }
+
+      // Reduced motion: skip the split/stagger entirely and show the text in
+      // its final visible state (opacity 1, no transform) right away.
+      if (prefersReducedMotion) {
+        gsap.set(el, { clearProps: 'all' })
+        gsap.set(el, { opacity: 1, x: 0, y: 0 })
+        animationCompletedRef.current = true
+        onCompleteRef.current?.()
+        return
       }
 
       if (el._rbsplitInstance) {
@@ -113,6 +134,10 @@ const SplitText = ({
               duration,
               ease,
               stagger: delay / 1000,
+              // Don't apply the invisible `from` state until the trigger fires.
+              // Otherwise chars sit at opacity:0 and, if the element is never
+              // scrolled into view, the text stays permanently invisible.
+              immediateRender: false,
               scrollTrigger: {
                 trigger: el,
                 start,
@@ -158,6 +183,7 @@ const SplitText = ({
         threshold,
         rootMargin,
         fontsLoaded,
+        prefersReducedMotion,
       ],
       scope: ref,
     },

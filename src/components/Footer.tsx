@@ -1,4 +1,5 @@
 import { Github, Linkedin, Mail } from 'lucide-react'
+import { GITHUB_PROFILE_URL, LINKEDIN_URL, CONTACT_EMAIL } from '@/constants/site'
 import * as m from '../paraglide/messages'
 
 export default function Footer() {
@@ -10,25 +11,25 @@ export default function Footer() {
         <p className='m-0 text-sm'>{m.footer_copyright({ year })}</p>
         <div className='flex items-center gap-3'>
           <a
-            href='https://github.com/your-username'
+            href={GITHUB_PROFILE_URL}
             target='_blank'
-            rel='noreferrer'
+            rel='noopener noreferrer'
             aria-label='GitHub'
             className='p-2 text-text-muted hover:text-accent-primary transition-colors duration-200 rounded-md'
           >
             <Github size={18} />
           </a>
           <a
-            href='https://linkedin.com/in/your-profile'
+            href={LINKEDIN_URL}
             target='_blank'
-            rel='noreferrer'
+            rel='noopener noreferrer'
             aria-label='LinkedIn'
             className='p-2 text-text-muted hover:text-accent-primary transition-colors duration-200 rounded-md'
           >
             <Linkedin size={18} />
           </a>
           <a
-            href='mailto:you@example.com'
+            href={`mailto:${CONTACT_EMAIL}`}
             aria-label='Email'
             className='p-2 text-text-muted hover:text-accent-primary transition-colors duration-200 rounded-md'
           >

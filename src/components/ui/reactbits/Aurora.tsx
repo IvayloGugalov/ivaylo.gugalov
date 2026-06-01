@@ -123,6 +123,13 @@ export default function Aurora({
     const ctn = ctnDom.current
     if (!ctn) return
 
+    // Respect prefers-reduced-motion: render a single static frame instead of
+    // running the continuous rAF loop. SSR-guarded (no window during render).
+    const reduceQuery =
+      typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+        ? window.matchMedia('(prefers-reduced-motion: reduce)')
+        : null
+
     const renderer = new Renderer({ alpha: true, antialias: true })
     const gl = renderer.gl
     gl.clearColor(0, 0, 0, 0)
@@ -160,8 +167,10 @@ export default function Aurora({
     resize()
 
     let animateId = 0
-    const update = (t: number) => {
-      animateId = requestAnimationFrame(update)
+
+    // Renders one frame using the current props/time. `t` defaults to 0 so a
+    // single static frame is deterministic when motion is reduced.
+    const renderFrame = (t: number) => {
       const { time: propTime = t * 0.01, speed: propSpeed = 1.0 } = propsRef.current
       program.uniforms.uTime.value = propTime * propSpeed * 0.1
       program.uniforms.uAmplitude.value = propsRef.current.amplitude ?? 1.0
@@ -173,10 +182,31 @@ export default function Aurora({
       })
       renderer.render({ scene: mesh })
     }
-    animateId = requestAnimationFrame(update)
+
+    const update = (t: number) => {
+      animateId = requestAnimationFrame(update)
+      renderFrame(t)
+    }
+
+    // Start the loop, or draw a single static frame when reduced motion is on.
+    const start = () => {
+      cancelAnimationFrame(animateId)
+      animateId = 0
+      if (reduceQuery?.matches) {
+        renderFrame(0)
+      } else {
+        animateId = requestAnimationFrame(update)
+      }
+    }
+    start()
+
+    // React live if the user toggles the OS setting.
+    const onPrefChange = () => start()
+    reduceQuery?.addEventListener('change', onPrefChange)
 
     return () => {
       cancelAnimationFrame(animateId)
+      reduceQuery?.removeEventListener('change', onPrefChange)
       window.removeEventListener('resize', resize)
       if (ctn && gl.canvas.parentNode === ctn) {
         ctn.removeChild(gl.canvas)

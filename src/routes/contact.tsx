@@ -1,5 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { SITE_URL, SITE_NAME } from '@/constants/site'
+import {
+  SITE_URL,
+  SITE_NAME,
+  GITHUB_PROFILE_URL,
+  GITHUB_USERNAME,
+  LINKEDIN_URL,
+  EMAIL,
+} from '@/constants/site'
 import { buildMeta } from '@/lib/seo'
 import { Github, Linkedin, Mail, ExternalLink } from 'lucide-react'
 import FadeContent from '@/components/ui/reactbits/FadeContent'
@@ -19,20 +26,20 @@ const LINKS = [
   {
     icon: Github,
     label: 'GitHub',
-    href: 'https://github.com/IvayloGugalov/',
-    hint: '@IvayloGugalov',
+    href: GITHUB_PROFILE_URL,
+    hint: GITHUB_USERNAME,
   },
   {
     icon: Linkedin,
     label: 'LinkedIn',
-    href: 'https://www.linkedin.com/in/ivaylo-gugalov-2b894619b/',
-    hint: 'ivaylo-gugalov',
+    href: LINKEDIN_URL,
+    hint: SITE_NAME,
   },
   {
     icon: Mail,
     label: 'Email',
-    href: 'mailto:ivaylogugalov@gmail.com',
-    hint: 'ivaylogugalov@gmail.com',
+    href: `mailto:${EMAIL}`,
+    hint: EMAIL,
   },
 ]
 
@@ -41,7 +48,7 @@ function ContactPage() {
     <main id='main-content' className='mx-auto max-w-2xl px-4 py-24 md:py-32'>
       <FadeContent blur duration={600}>
         <p className='text-sm text-text-muted mb-4'>{m.contact_kicker()}</p>
-        <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-3'>
+        <h1 className='text-4xl font-bold tracking-tight text-text-primary mb-4'>
           {m.contact_heading()}
         </h1>
         <p className='text-text-secondary leading-relaxed mb-12'>
@@ -71,10 +78,12 @@ function ContactPage() {
                     <p className='text-xs text-text-muted m-0'>{hint}</p>
                   </div>
                 </div>
-                <ExternalLink
-                  size={14}
-                  className='text-text-muted group-hover:text-accent-primary group-hover:translate-x-1 transition-[color,transform] duration-150'
-                />
+                {!href.startsWith('mailto') && (
+                  <ExternalLink
+                    size={14}
+                    className='text-text-muted group-hover:text-accent-primary group-hover:translate-x-1 transition-[color,transform] duration-150'
+                  />
+                )}
               </a>
             </li>
           ))}

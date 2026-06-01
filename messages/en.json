@@ -15,18 +15,21 @@
   "home_tagline": "Full-stack engineer. .NET + React. Writing about it.",
   "home_cta_blog": "Read the blog",
   "home_github_stars": "GitHub stars",
+  "home_work_heading": "Selected work",
+  "home_work_view_all": "View all projects",
+  "home_work_scroll_aria": "Scroll to selected work",
 
   "about_kicker": "About",
   "about_heading": "I build full-stack products.",
-  "about_bio_1": "I'm a full-stack engineer focused on TypeScript, React, and .NET — building products that feel fast and look intentional.",
-  "about_bio_2": "I've spent the past few years working across the full stack — from polished frontend interfaces to well-structured APIs and reliable data layers. Developer experience matters as much as user experience.",
+  "about_bio_1": "I'm a full-stack engineer focused on TypeScript, React, and .NET, building products that feel fast and look intentional.",
+  "about_bio_2": "I've spent the past few years working across the full stack, from polished frontend interfaces to well-structured APIs and reliable data layers. Developer experience matters as much as user experience.",
   "about_bio_3": "Outside of work I write about what I'm learning, contribute to open source, and occasionally build tools just for the joy of it.",
   "about_skills_heading": "Skills",
   "about_open_to_work": "Currently open to new opportunities.",
 
   "blog_kicker": "Blog",
   "blog_heading": "Thoughts on code, design, and building things.",
-  "blog_description": "Thoughts on code, design, and building things on the web.",
+  "blog_description": "Engineering articles on TypeScript, React, .NET, and software design by Ivaylo Gugalov.",
   "blog_no_posts": "No posts found.",
   "blog_filter_all": "All",
   "blog_views": "{count} views",
@@ -56,7 +59,7 @@
   "contact_heading": "Let's connect.",
   "contact_description": "I'm best reached via email or LinkedIn.",
 
-  "footer_copyright": "© {year} Your Name. All rights reserved.",
+  "footer_copyright": "© {year} Ivaylo Gugalov. All rights reserved.",
 
   "error_404_code": "404",
   "error_404_heading": "Page not found",

@@ -40,6 +40,16 @@ const FadeContent: React.FC<FadeContentProps> = ({
       scrollerTarget = document.querySelector(scrollerTarget)
     }
 
+    // Respect prefers-reduced-motion: skip the scroll-triggered fade/blur and
+    // render the content in its final visible state immediately.
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+    ) {
+      gsap.set(el, { autoAlpha: 1, filter: 'blur(0px)', willChange: 'auto' })
+      return
+    }
+
     const startPct = (1 - threshold) * 100
     const getSeconds = (val: number) => (val > 10 ? val / 1000 : val)
 
